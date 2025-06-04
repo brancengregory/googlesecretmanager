@@ -1,2 +1,5 @@
+^renv$
+^renv\.lock$
 ^secretmanager\.Rproj$
 ^\.Rproj\.user$
+^data-raw$
