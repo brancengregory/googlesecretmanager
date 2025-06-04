@@ -2,41 +2,24 @@
 % Please edit documentation in R/request.R
 \name{secretmanager_request_make}
 \alias{secretmanager_request_make}
-\title{Make a request for the Google Drive v3 API}
+\title{Make a request for the Google Secret Manager API}
 \usage{
 secretmanager_request_make(x, ...)
 }
 \arguments{
 \item{x}{List, holding the components for an HTTP request, presumably created
-with \code{\link[=request_generate]{request_generate()}} Should contain the \code{method}, \code{url}, \code{body},
+with \code{\link[=secretmanager_request_generate]{secretmanager_request_generate()}}. Should contain the \code{method}, \code{url}, \code{body},
 and \code{token}.}
 
 \item{...}{Optional arguments passed through to the HTTP method.}
 }
 \value{
-\code{request_make()}: Object of class \code{response} from \link{httr}.
+An \code{httr::response} object.
 }
 \description{
-Low-level functions to execute one or more Drive API requests and, perhaps,
-process the response(s). Most users should, instead, use higher-level
-wrappers that facilitate common tasks, such as uploading or downloading Drive
-files. The functions here are intended for internal use and for programming
-around the Drive API. Three functions are documented here:
-\itemize{
-\item \code{request_make()} does the bare minimum: calls \code{\link[gargle:request_make]{gargle::request_make()}},
-only adding the googledrive user agent. Typically the input is created
-with \code{\link[=request_generate]{request_generate()}} and the output is processed with
-\code{\link[gargle:response_process]{gargle::response_process()}}.
-\item \code{do_request()} is simply
-\code{gargle::response_process(request_make(x, ...))}. It exists only because
-we had to make \code{do_paginated_request()} and it felt weird to not make the
-equivalent for a single request.
-\item \code{do_paginated_request()} executes the input request \strong{with page
-traversal}. It is impossible to separate paginated requests into a "make
-request" step and a "process request" step, because the token for the
-next page must be extracted from the content of the current page.
-Therefore this function does both and returns a list of processed
-responses, one per page.
+This function serves as a thin wrapper around \code{gargle::request_make()}.
+It adds the package's user agent and executes the HTTP request, including
+handling retries. The input \code{x} is typically created with
+\code{\link[=secretmanager_request_generate]{secretmanager_request_generate()}} and the output should then be processed
+with \code{\link[gargle:response_process]{gargle::response_process()}}.
 }
-}
-\concept{low-level API functions}

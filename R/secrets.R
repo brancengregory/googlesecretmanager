@@ -34,10 +34,12 @@ NULL
 #' my_secrets <- list_secrets(project_id = "your-gcp-project-id")
 #' print(my_secrets)
 #' }
-list_secrets <- function(project_id,
-                         filter = NULL,
-                         page_size = NULL,
-                         page_token = NULL) {
+list_secrets <- function(
+    project_id,
+    filter = NULL,
+    page_size = NULL,
+    page_token = NULL
+) {
 
   # Define the Secret Manager API endpoint ID for listing secrets
   endpoint_id <- "secretmanager.projects.secrets.list"

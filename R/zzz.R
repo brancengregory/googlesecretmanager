@@ -6,7 +6,9 @@
 
 # Prevents R CMD check NOTE: Undefined global functions or variables
 # when .auth is used across multiple files.
-utils::globalVariables(".auth")
+utils::globalVariables(c(".auth", ".endpoints"))
+
+.endpoints <- NULL
 
 .onLoad <- function(libname, pkgname) {
   utils::assignInMyNamespace(
@@ -14,6 +16,7 @@ utils::globalVariables(".auth")
     gargle::init_AuthState(package = pkgname, auth_active = TRUE)
   )
 
-  # You can add other .onLoad configurations here if needed
-  # For example, setting up options or checking dependencies
+  if (file.exists(system.file("R/sysdata.rda", package = pkgname))) {
+    load(system.file("R/sysdata.rda", package = pkgname), envir = as.environment(topenv()))
+  }
 }

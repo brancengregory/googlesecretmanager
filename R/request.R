@@ -17,56 +17,83 @@ secretmanager_request_generate <- function(
   ept <- secretmanager_endpoint(endpoint)
   if (is.null(ept)) {
     rlang::abort(
-      "Endpoint not recognized:",
-      endpoint
+      paste0(
+        "Endpoint not recognized: '",
+        endpoint,
+        "'. Please ensure the endpoint ID is correct and sysdata.rda is up to date."
+      )
     )
   }
 
+  service_root_url <- attr(.endpoints, "base_url")
+
   req <- gargle::request_develop(
     endpoint = ept,
-    params = params
+    params = params,
+    base_url = service_root_url
   )
 
-  gargle::request_build(
-    path = req$path,
+  # Defensive check for the URL returned by request_develop.
+  # If req$url is character(0), extract_path_names (called by request_build's internals)
+  # will fail with "subscript out of bounds" on m[[1L]] because gregexpr on character(0) returns list().
+  if (is.null(req$url) || !is.character(req$url) || length(req$url) != 1 || !nzchar(req$url[1])) {
+    debug_info <- paste0(
+      "Debug Info: endpoint_id='", endpoint,
+      "', endpoint_path_template='", if(!is.null(ept) && !is.null(ept$path)) ept$path else "UNAVAILABLE",
+      "', service_root_url='", service_root_url %||% "NULL_OR_EMPTY",
+      "', params_parent_exists='", !is.null(params$parent),
+      "', params_parent_class='", if(!is.null(params$parent)) class(params$parent)[1] else "N/A",
+      "', params_parent_nzchar='", if(!is.null(params$parent) && is.character(params$parent)) nzchar(params$parent[1]) else "N/A" # check nzchar of first element
+    )
+    rlang::abort(
+      message = paste0(
+        "Failed to develop a valid URL for endpoint '", endpoint, "'. ",
+        "URL from gargle::request_develop() was NULL, not a single non-empty string, or was an empty string. ",
+        debug_info
+      ),
+      class = "secretmanager_url_develop_error"
+    )
+  }
+
+  built_req <- gargle::request_build(
+    path = req$url,
     method = req$method,
-    params = req$params,
+    params = req$params,  # These are query/body parameters from request_develop
     body = req$body,
-    token = token
+    token = token,
+    key = key
+    # base_url argument to request_build is ignored if `path` is an absolute URL.
   )
+
+  return(built_req)
 }
 
-#' Make a request for the Google Drive v3 API
+
+# Make a request for the Google Secret Manager API
 #'
-#' Low-level functions to execute one or more Drive API requests and, perhaps,
-#' process the response(s). Most users should, instead, use higher-level
-#' wrappers that facilitate common tasks, such as uploading or downloading Drive
-#' files. The functions here are intended for internal use and for programming
-#' around the Drive API. Three functions are documented here:
-#'   * `request_make()` does the bare minimum: calls [gargle::request_make()],
-#'     only adding the googledrive user agent. Typically the input is created
-#'     with [request_generate()] and the output is processed with
-#'     [gargle::response_process()].
-#'   * `do_request()` is simply
-#'     `gargle::response_process(request_make(x, ...))`. It exists only because
-#'     we had to make `do_paginated_request()` and it felt weird to not make the
-#'     equivalent for a single request.
-#'   * `do_paginated_request()` executes the input request **with page
-#'     traversal**. It is impossible to separate paginated requests into a "make
-#'     request" step and a "process request" step, because the token for the
-#'     next page must be extracted from the content of the current page.
-#'     Therefore this function does both and returns a list of processed
-#'     responses, one per page.
+#' This function serves as a thin wrapper around `gargle::request_make()`.
+#' It adds the package's user agent and executes the HTTP request, including
+#' handling retries. The input `x` is typically created with
+#' [secretmanager_request_generate()] and the output should then be processed
+#' with [gargle::response_process()].
 #'
 #' @param x List, holding the components for an HTTP request, presumably created
-#'   with [request_generate()] Should contain the `method`, `url`, `body`,
+#'   with [secretmanager_request_generate()]. Should contain the `method`, `url`, `body`,
 #'   and `token`.
 #' @param ... Optional arguments passed through to the HTTP method.
 #'
-#' @return `request_make()`: Object of class `response` from [httr].
+#' @return An `httr::response` object.
 #' @export
-#' @family low-level API functions
 secretmanager_request_make <- function(x, ...) {
-  gargle::request_retry(x, ...)
+  # FIX: Use gargle::request_make directly, which handles retries and the HTTP call.
+  res <- gargle::request_retry(
+    x,
+    user_agent = "secretmanager-r-package", # Add your package's user agent
+    ... # Pass any additional arguments through
+  )
+
+  processed_res <- gargle::response_process(response)
+
+  return(processed_res)
 }
 
