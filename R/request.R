@@ -33,36 +33,14 @@ secretmanager_request_generate <- function(
     base_url = service_root_url
   )
 
-  # Defensive check for the URL returned by request_develop.
-  # If req$url is character(0), extract_path_names (called by request_build's internals)
-  # will fail with "subscript out of bounds" on m[[1L]] because gregexpr on character(0) returns list().
-  if (is.null(req$url) || !is.character(req$url) || length(req$url) != 1 || !nzchar(req$url[1])) {
-    debug_info <- paste0(
-      "Debug Info: endpoint_id='", endpoint,
-      "', endpoint_path_template='", if(!is.null(ept) && !is.null(ept$path)) ept$path else "UNAVAILABLE",
-      "', service_root_url='", service_root_url %||% "NULL_OR_EMPTY",
-      "', params_parent_exists='", !is.null(params$parent),
-      "', params_parent_class='", if(!is.null(params$parent)) class(params$parent)[1] else "N/A",
-      "', params_parent_nzchar='", if(!is.null(params$parent) && is.character(params$parent)) nzchar(params$parent[1]) else "N/A" # check nzchar of first element
-    )
-    rlang::abort(
-      message = paste0(
-        "Failed to develop a valid URL for endpoint '", endpoint, "'. ",
-        "URL from gargle::request_develop() was NULL, not a single non-empty string, or was an empty string. ",
-        debug_info
-      ),
-      class = "secretmanager_url_develop_error"
-    )
-  }
-
   built_req <- gargle::request_build(
-    path = req$url,
+    path = req$path,
     method = req$method,
-    params = req$params,  # These are query/body parameters from request_develop
+    params = req$params,
     body = req$body,
     token = token,
-    key = key
-    # base_url argument to request_build is ignored if `path` is an absolute URL.
+    key = key,
+    base_url = req$base_url
   )
 
   return(built_req)
