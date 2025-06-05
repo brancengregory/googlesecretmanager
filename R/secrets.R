@@ -6,6 +6,26 @@
 NULL
 
 
+#' @export
+secret <- function(s) {
+  structure(s, class = "secret")
+}
+
+#' @export
+print.secret <- function(x, ...) {
+  cat("*****\n")
+}
+
+#' @export
+as_secret <- function(x, ...) {
+  UseMethod("as_secret")
+}
+
+#' @export
+as_secret.character <- function(x, ...) {
+  secret(x)
+}
+
 #' List Google Cloud Secrets
 #'
 #' @description
@@ -155,10 +175,12 @@ secret_version_latest <- function(
   resp <- gargle::request_make(req) |>
     gargle::response_process()
 
-  secret <- jsonlite::base64_dec(resp$payload$data) |>
+  secret_string <- jsonlite::base64_dec(resp$payload$data) |>
     rawToChar()
 
-  return(secret)
+  secret <- as_secret(secret_string)
+
+  invisible(secret)
 }
 
 
