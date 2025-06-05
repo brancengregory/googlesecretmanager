@@ -1,5 +1,5 @@
 empty_object <- function() {
-  setNames(list(), character(0))
+  stats::setNames(list(), character(0))
 }
 
 
@@ -35,7 +35,7 @@ empty_object <- function() {
 #' secretmanager_endpoint("secretmanager.projects.secrets.versions.destroy")
 #' secretmanager_endpoint(4)
 secretmanager_endpoints <- function(i = NULL) {
-  if (is.null(i) || is_expose(i)) {
+  if (is.null(i)) {
     i <- seq_along(.endpoints)
   }
   stopifnot(is.character(i) || (is.numeric(i)))

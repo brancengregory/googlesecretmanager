@@ -68,7 +68,7 @@ list_secrets <- function(
     gargle::response_process()
 
   secrets <- resp$secrets |>
-    map_chr(\(x) x$name)
+    purrr::map_chr(\(x) x$name)
 
   return(secrets)
 }
@@ -112,7 +112,7 @@ list_secret_versions <- function(
     gargle::response_process()
 
   secrets <- resp$secrets |>
-    map_chr(\(x) basename(x$name))
+    purrr::map_chr(\(x) basename(x$name))
 
   return(resp)
 }

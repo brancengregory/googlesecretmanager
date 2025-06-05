@@ -14,7 +14,7 @@ get_discovery_ids <- function() {
   apis <- httr::content(
     httr::GET("https://www.googleapis.com/discovery/v1/apis")
   )
-  map_chr(apis[["items"]], "id")
+  purrr::map_chr(apis[["items"]], "id")
 }
 
 #' Form the URL for a Discovery Document
@@ -132,7 +132,7 @@ get_raw_methods <- function(dd) {
     pluck("resources") %>%
     map("methods") %>%
     flatten() %>%
-    set_names(map_chr(., "id"))
+    purrr::set_names(purrr::map_chr(., "id"))
 }
 
 #' Groom method properties
