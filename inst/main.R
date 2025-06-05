@@ -1,7 +1,6 @@
 devtools::load_all()
 
 library(gargle)
-library(purrr)
 
 scopes <- c("https://www.googleapis.com/auth/cloud-platform")
 token <- gargle::token_fetch(scopes = scopes)
@@ -24,4 +23,3 @@ add_secret_version(
   secret_id = "cjac-test-secret",
   payload = "Suhhhhhh, i'm a secret--don't tell!"
 )
-
