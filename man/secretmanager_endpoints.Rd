@@ -2,12 +2,9 @@
 % Please edit documentation in R/utils.R
 \name{secretmanager_endpoints}
 \alias{secretmanager_endpoints}
-\alias{secretmanager_endpoint}
 \title{List Secret Manager endpoints}
 \usage{
 secretmanager_endpoints(i = NULL)
-
-secretmanager_endpoint(i)
 }
 \arguments{
 \item{i}{The name(s) or integer index(ices) of the endpoints to return. \code{i}
@@ -28,7 +25,7 @@ this data.
 }
 
 The names of this list (or the \code{id} sub-elements) are the nicknames that can
-be used to specify an endpoint in \code{\link[=request_generate]{request_generate()}}. For each endpoint, we
+be used to specify an endpoint in request_generate(). For each endpoint, we
 store its nickname or \code{id}, the associated HTTP verb, the \code{path}, and details
 about the parameters. This list is derived programmatically from the Secret Manager API v1 Discovery Document
 (\verb{https://www.googleapis.com/discovery/v1/apis/secretmanager/v1/rest}) using the

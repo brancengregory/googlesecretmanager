@@ -13,7 +13,7 @@ empty_object <- function() {
 #'   * `secretmanager_endpoints()` returns a list of endpoints, i.e. it uses `[`.
 #'
 #' The names of this list (or the `id` sub-elements) are the nicknames that can
-#' be used to specify an endpoint in [request_generate()]. For each endpoint, we
+#' be used to specify an endpoint in request_generate(). For each endpoint, we
 #' store its nickname or `id`, the associated HTTP verb, the `path`, and details
 #' about the parameters. This list is derived programmatically from the Secret Manager API v1 Discovery Document
 #' (`https://www.googleapis.com/discovery/v1/apis/secretmanager/v1/rest`) using the
@@ -42,8 +42,12 @@ secretmanager_endpoints <- function(i = NULL) {
   .endpoints[i]
 }
 
-#' @rdname secretmanager_endpoints
+#' Secret Manager Endpoint
+#'
+#' @param i The index of the endpoint
+#'
 #' @export
+#'
 secretmanager_endpoint <- function(i) {
   stopifnot(rlang::is_string(i) || (is.numeric(i) && length(i) == 1))
   .endpoints[[i]]

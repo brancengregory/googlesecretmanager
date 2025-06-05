@@ -11,11 +11,6 @@ list_secrets(project_id, filter = NULL)
 
 \item{filter}{Optional. A filter expression to narrow down the results.
 See Google Cloud Secret Manager documentation for filter syntax.}
-
-\item{page_size}{Optional. The maximum number of results to return per page.}
-
-\item{page_token}{Optional. A token received from a previous \code{list_secrets}
-call, used to retrieve the next page.}
 }
 \value{
 A list containing information about the secrets in the project.

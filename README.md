@@ -1,5 +1,9 @@
 # secretmanager
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 An R package for interacting with Google Cloud Secret Manager, providing a secure way to manage and access secrets in your R applications.
 
 ## Installation

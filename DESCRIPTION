@@ -1,23 +1,21 @@
 Package: secretmanager
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9001
+Title: Manage Google Cloud Platform Secrets with R
+Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Brancen", "Gregory", , "brancengregory@gmail.com", role = c("aut", "cre"))
+Description:
+    An R package for interacting with Google Cloud Secret Manager, providing a secure way to manage and access secrets in your R applications.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
-    b64,
     gargle (>= 1.5.2),
     httr (>= 1.4.0),
     jsonlite (>= 1.8.0),
     lifecycle,
+    rlang,
     utils
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
 Depends: 
     R (>= 4.0)
+URL: https://brancengregory.github.io/secretmanager/

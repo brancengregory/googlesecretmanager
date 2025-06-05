@@ -16,9 +16,6 @@ NULL
 #' @param project_id The Google Cloud Project ID.
 #' @param filter Optional. A filter expression to narrow down the results.
 #'   See Google Cloud Secret Manager documentation for filter syntax.
-#' @param page_size Optional. The maximum number of results to return per page.
-#' @param page_token Optional. A token received from a previous `list_secrets`
-#'   call, used to retrieve the next page.
 #'
 #' @return A list containing information about the secrets in the project.
 #' @export
