@@ -1,3 +1,8 @@
+empty_object <- function() {
+  setNames(list(), character(0))
+}
+
+
 #' List Secret Manager endpoints
 #'
 #' @description

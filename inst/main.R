@@ -12,4 +12,16 @@ project <- "cjac-332215"
 
 secrets <- list_secrets(project)
 
-secret_version_latest(secrets[3], project)
+secret_version_latest(secrets[7], project)
+
+create_secret(
+  project_id = project,
+  secret_id = "cjac-test-secret"
+)
+
+add_secret_version(
+  project_id = project,
+  secret_id = "cjac-test-secret",
+  payload = "Suhhhhhh, i'm a secret--don't tell!"
+)
+
