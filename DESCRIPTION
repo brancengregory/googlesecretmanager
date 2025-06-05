@@ -1,6 +1,6 @@
 Package: secretmanager
 Title: Manage Google Cloud Platform Secrets with R
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Brancen", "Gregory", , "brancengregory@gmail.com", role = c("aut", "cre"))
 Description:
