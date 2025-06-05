@@ -71,7 +71,7 @@ list_secrets <- function(
     gargle::response_process()
 
   secrets <- resp$secrets |>
-    map_chr(\(x) basename(x$name))
+    map_chr(\(x) x$name)
 
   return(secrets)
 }

@@ -12,3 +12,4 @@ project <- "cjac-332215"
 
 secrets <- list_secrets(project)
 
+secret_version_latest(secrets[3], project)
