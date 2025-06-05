@@ -5,22 +5,40 @@
 #' @importFrom rlang %||%
 NULL
 
-
+#' Secret
+#'
+#' @param s A string
+#'
 #' @export
 secret <- function(s) {
   structure(s, class = "secret")
 }
 
+#' Secret Print Method
+#'
+#' @param x A secret
+#' @param ... Unused argument required for method
+#'
 #' @export
 print.secret <- function(x, ...) {
   cat("*****\n")
 }
 
+#' As Secret
+#'
+#' @param x A string
+#' @param ... Unused argument needed for method
+#'
 #' @export
 as_secret <- function(x, ...) {
   UseMethod("as_secret")
 }
 
+#' As Secret Character
+#'
+#' @param x A string
+#' @param ... Unused argument needed for method
+#'
 #' @export
 as_secret.character <- function(x, ...) {
   secret(x)
