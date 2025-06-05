@@ -3,7 +3,7 @@ library(tidyverse)
 devtools::load_all()
 
 source(
-  system.file("ingest-functions.R", package = "secretmanager")
+  system.file("data-raw", "ingest-functions.R", package = "secretmanager")
 )
 
 existing <- list_discovery_documents("secretmanager:v1")
@@ -20,7 +20,7 @@ if (length(existing) < 1) {
       * {existing}
     ")
   rlang::inform(msg)
-  x <- here::here("data-raw", existing)
+  discovery_doc_path <- here::here("data-raw", existing)
 }
 
 discovery_doc <- read_discovery_document(discovery_doc_path)
@@ -56,11 +56,17 @@ find_all_named_elements <- function(dd, element_name) {
 
 methods <- find_all_named_elements(discovery_doc, "methods") |>
   (\(x) {
-    purrr::set_names(x, purrr::map_chr(x, "id"))
+    purrr::set_names(x, purrr::map_chr(x, \(x) { x$id }))
   })() |>
   map(groom_properties,  discovery_doc) |>
   map(add_schema_params, discovery_doc) |>
-  map(add_global_params, discovery_doc)
+  map(add_global_params, discovery_doc) |>
+  map(\(method) {
+    if (!is.null(method$path)) {
+      method$path <- gsub("\\{(\\+)([^}]+)\\}", "{\\2}", method$path)
+    }
+    return(method)
+  })
 
 .endpoints <- methods
 attr(.endpoints, "base_url") <- discovery_doc$rootUrl # baseUrl??

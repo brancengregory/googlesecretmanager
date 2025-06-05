@@ -4,7 +4,7 @@
 \alias{list_secrets}
 \title{List Google Cloud Secrets}
 \usage{
-list_secrets(project_id, filter = NULL, page_size = NULL, page_token = NULL)
+list_secrets(project_id, filter = NULL)
 }
 \arguments{
 \item{project_id}{The Google Cloud Project ID.}

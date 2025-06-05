@@ -36,32 +36,42 @@ NULL
 #' }
 list_secrets <- function(
     project_id,
-    filter = NULL,
-    page_size = NULL,
-    page_token = NULL
+    filter = NULL
 ) {
 
   # Define the Secret Manager API endpoint ID for listing secrets
-  endpoint_id <- "secretmanager.projects.secrets.list"
+  # endpoint_id <- "secretmanager.projects.secrets.list"
 
   # Prepare parameters for the API call. These names must match
   # the parameter names used in the hardcoded endpoint definition in
-  # secretmanager_request_generate (e.g., 'parent', 'filter', 'pageSize', 'pageToken').
+  # secretmanager_request_generate (e.g., 'parent', 'filter').
   params <- list(
-    parent = paste0("projects/", project_id), # API typically expects 'parent' for project path
-    filter = filter,
-    pageSize = page_size, # Note camelCase as per API standard
-    pageToken = page_token # Note camelCase as per API standard
+    parent = paste0("projects/", project_id), # API expects 'parent' for project path
+    filter = filter
   )
 
   # Generate the request using our internal helpers
-  req_built <- secretmanager_request_generate(
-    endpoint = endpoint_id,
-    params = params
+  # req <- secretmanager_request_generate(
+  #   endpoint = endpoint_id,
+  #   params = params
+  # )
+
+  req <- gargle::request_build(
+    method = "GET",
+    path = "/v1/{parent}/secrets",
+    params = params,
+    token = secretmanager_token(),
+    base_url = "https://secretmanager.googleapis.com"
   )
 
   # Make the HTTP request and process the response using gargle helpers
-  response_content <- secretmanager_request_make(req_built)
+  # response_content <- secretmanager_request_make(req)
 
-  return(response_content$secrets)
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  secrets <- resp$secrets |>
+    map_chr(\(x) basename(x$name))
+
+  return(secrets)
 }

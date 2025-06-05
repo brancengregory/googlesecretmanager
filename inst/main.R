@@ -10,4 +10,5 @@ secretmanager_auth(token = token)
 
 project <- "cjac-332215"
 
-list_secrets(project)
+secrets <- list_secrets(project)
+
