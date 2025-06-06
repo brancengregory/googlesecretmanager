@@ -2,10 +2,15 @@
 % Please edit documentation in R/secret.R
 \name{print.sm_tbl}
 \alias{print.sm_tbl}
-\title{print.sm_tbl}
+\title{Print sm_tbl}
 \usage{
 \method{print}{sm_tbl}(x, ...)
 }
+\arguments{
+\item{x}{A sm_tbl object}
+
+\item{...}{Additional arguments passed to method}
+}
 \description{
-print.sm_tbl
+Print sm_tbl
 }

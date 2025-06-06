@@ -110,3 +110,447 @@ sm_secret_version_ls.character <- function(secret, project_id = sm_project_get()
 
   sm_secret_version_ls.sm_secret(secret = mock_secret_obj, filter = filter, ...)
 }
+
+#' Get Secret Version Metadata
+#'
+#' Gets metadata for a specific Secret Version.
+#'
+#' @param secret The secret containing the version. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param version_id The version ID to get. Can be "latest" to get the latest version.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return An `sm_secret_version` object representing the version metadata.
+#' @export
+sm_secret_version_get <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_get")
+}
+
+#' @rdname sm_secret_version_get
+#' @export
+sm_secret_version_get.character <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the resource name
+  resource_name <- paste0("projects/", project_id, "/secrets/", secret_id, "/versions/", version_id)
+
+  cli::cli_alert_info("Getting version {.val {version_id}} of secret {.val {secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "GET",
+    path = paste0("/v1/", resource_name),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for GetSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' @rdname sm_secret_version_get
+#' @export
+sm_secret_version_get.sm_secret <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to get version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to get version."
+    )
+  }
+
+  # Construct the resource name using the secret's name
+  resource_name <- paste0(secret$name, "/versions/", version_id)
+
+  cli::cli_alert_info("Getting version {.val {version_id}} of secret {.val {secret$secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "GET",
+    path = paste0("/v1/", resource_name),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for GetSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' Add a Secret Version
+#'
+#' Adds a new version to an existing Secret.
+#'
+#' @param secret The secret to add a version to. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param payload The secret data to store. Will be base64 encoded.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return An `sm_secret_version` object representing the new version.
+#' @export
+sm_secret_version_add <- function(secret, payload, project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_add")
+}
+
+#' @rdname sm_secret_version_add
+#' @export
+sm_secret_version_add.character <- function(secret, payload, project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the parent resource name
+  parent_resource_name <- paste0("projects/", project_id, "/secrets/", secret_id)
+
+  # Base64 encode the payload
+  encoded_payload <- jsonlite::base64_enc(payload)
+
+  # Construct the request body
+  body <- list(
+    payload = list(data = encoded_payload)
+  )
+
+  cli::cli_alert_info("Adding new version to secret {.val {secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", parent_resource_name, ":addVersion"),
+    body = body,
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for AddSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' @rdname sm_secret_version_add
+#' @export
+sm_secret_version_add.sm_secret <- function(secret, payload, project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to add version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to add version."
+    )
+  }
+
+  # Base64 encode the payload
+  encoded_payload <- jsonlite::base64_enc(payload)
+
+  # Construct the request body
+  body <- list(
+    payload = list(data = encoded_payload)
+  )
+
+  cli::cli_alert_info("Adding new version to secret {.val {secret$secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", secret$name, ":addVersion"),
+    body = body,
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for AddSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' Delete a Secret Version
+#'
+#' Deletes a Secret Version.
+#'
+#' @param secret The secret containing the version. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param version_id The version ID to delete.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return Invisibly returns `NULL`.
+#' @export
+sm_secret_version_delete <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_delete")
+}
+
+#' @rdname sm_secret_version_delete
+#' @export
+sm_secret_version_delete.character <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the resource name
+  resource_name <- paste0("projects/", project_id, "/secrets/", secret_id, "/versions/", version_id)
+
+  cli::cli_alert_info("Deleting version {.val {version_id}} of secret {.val {secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "DELETE",
+    path = paste0("/v1/", resource_name),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  gargle::request_make(req) |>
+    gargle::response_process()
+
+  cli::cli_alert_success("Version {.val {version_id}} of secret {.val {secret_id}} deleted successfully.")
+  invisible(NULL)
+}
+
+#' @rdname sm_secret_version_delete
+#' @export
+sm_secret_version_delete.sm_secret <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to delete version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to delete version."
+    )
+  }
+
+  # Construct the resource name using the secret's name
+  resource_name <- paste0(secret$name, "/versions/", version_id)
+
+  cli::cli_alert_info("Deleting version {.val {version_id}} of secret {.val {secret$secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "DELETE",
+    path = paste0("/v1/", resource_name),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  gargle::request_make(req) |>
+    gargle::response_process()
+
+  cli::cli_alert_success("Version {.val {version_id}} of secret {.val {secret$secret_id}} deleted successfully.")
+  invisible(NULL)
+}
+
+#' Enable a Secret Version
+#'
+#' Enables a Secret Version.
+#'
+#' @param secret The secret containing the version. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param version_id The version ID to enable.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return An `sm_secret_version` object representing the enabled version.
+#' @export
+sm_secret_version_enable <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_enable")
+}
+
+#' @rdname sm_secret_version_enable
+#' @export
+sm_secret_version_enable.character <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the resource name
+  resource_name <- paste0("projects/", project_id, "/secrets/", secret_id, "/versions/", version_id)
+
+  cli::cli_alert_info("Enabling version {.val {version_id}} of secret {.val {secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", resource_name, ":enable"),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for EnableSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' @rdname sm_secret_version_enable
+#' @export
+sm_secret_version_enable.sm_secret <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to enable version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to enable version."
+    )
+  }
+
+  # Construct the resource name using the secret's name
+  resource_name <- paste0(secret$name, "/versions/", version_id)
+
+  cli::cli_alert_info("Enabling version {.val {version_id}} of secret {.val {secret$secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", resource_name, ":enable"),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for EnableSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' Disable a Secret Version
+#'
+#' Disables a Secret Version.
+#'
+#' @param secret The secret containing the version. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param version_id The version ID to disable.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return An `sm_secret_version` object representing the disabled version.
+#' @export
+sm_secret_version_disable <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_disable")
+}
+
+#' @rdname sm_secret_version_disable
+#' @export
+sm_secret_version_disable.character <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the resource name
+  resource_name <- paste0("projects/", project_id, "/secrets/", secret_id, "/versions/", version_id)
+
+  cli::cli_alert_info("Disabling version {.val {version_id}} of secret {.val {secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", resource_name, ":disable"),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for DisableSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}
+
+#' @rdname sm_secret_version_disable
+#' @export
+sm_secret_version_disable.sm_secret <- function(secret, version_id, project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to disable version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to disable version."
+    )
+  }
+
+  # Construct the resource name using the secret's name
+  resource_name <- paste0(secret$name, "/versions/", version_id)
+
+  cli::cli_alert_info("Disabling version {.val {version_id}} of secret {.val {secret$secret_id}}...")
+
+  # Build the request
+  req <- gargle::request_build(
+    method = "POST",
+    path = paste0("/v1/", resource_name, ":disable"),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  # Make the request and process the response
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp)) {
+    cli::cli_abort("API response for DisableSecretVersion was not a list. Received: {.val {typeof(resp)}}")
+  }
+
+  new_sm_secret_version(resp)
+}

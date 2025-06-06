@@ -2,10 +2,15 @@
 % Please edit documentation in R/secret.R
 \name{print.sm_secret}
 \alias{print.sm_secret}
-\title{print.sm_secret}
+\title{Print sm_secret}
 \usage{
 \method{print}{sm_secret}(x, ...)
 }
+\arguments{
+\item{x}{A sm_secret object}
+
+\item{...}{Additional arguments passed to method}
+}
 \description{
-print.sm_secret
+Print sm_secret
 }
