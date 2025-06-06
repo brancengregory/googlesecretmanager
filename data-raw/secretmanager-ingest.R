@@ -68,7 +68,7 @@ methods <- find_all_named_elements(discovery_doc, "methods") |>
     return(method)
   })
 
-.endpoints <- methods
-attr(.endpoints, "base_url") <- discovery_doc$rootUrl # baseUrl??
+.sm_endpoints <- methods
+attr(.sm_endpoints, "base_url") <- discovery_doc$rootUrl # baseUrl??
 
-usethis::use_data(.endpoints, internal = TRUE, overwrite = TRUE)
+usethis::use_data(.sm_endpoints, internal = TRUE, overwrite = TRUE)

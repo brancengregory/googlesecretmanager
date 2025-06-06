@@ -68,31 +68,51 @@ Here's a basic example of how to use the package:
 ```r
 library(secretmanager)
 
-project <- "test-project"
+# Set your project ID
+sm_project_set("my-project-id")
 
-secrets <- list_secrets(project)
+# List all secrets in the project
+secrets <- sm_secret_ls()
 
-secret_version_latest(secrets[1], project)
+# Get metadata for a specific secret
+secret <- sm_secret_get("my-secret-id")
 
-create_secret(
-  project_id = project,
-  secret_id = "test-secret"
+# Create a new secret
+new_secret <- sm_secret_create(
+  secret_id = "my-new-secret",
+  replication = list(automatic = list())
 )
 
-add_secret_version(
-  project_id = project,
-  secret_id = "test-secret",
-  payload = "Shhhhhh, i'm a secret--don't tell!"
+# Add a version to a secret
+version <- sm_secret_version_add(
+  secret_id = "my-secret",
+  payload = "my-secret-value"
 )
+
+# List versions of a secret
+versions <- sm_secret_version_ls("my-secret")
+
+# Delete a secret version
+sm_secret_version_delete(
+  secret_id = "my-secret",
+  version_id = "latest"
+)
+
+# Delete a secret
+sm_secret_delete("my-secret")
 ```
 
 ## Features
 
 - Secure access to Google Cloud Secret Manager
 - Easy integration with gargle authentication
-- Support for creating, reading, updating, and deleting secrets
-- Base64 encoding/decoding of secret values
-- Comprehensive error handling
+- Support for:
+  - Creating, reading, updating, and deleting secrets
+  - Managing secret versions
+  - Base64 encoding/decoding of secret values
+  - Comprehensive error handling
+  - Project-level operations
+  - Secret metadata management
 
 ## Development
 
