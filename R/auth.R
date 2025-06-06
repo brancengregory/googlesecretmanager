@@ -20,7 +20,7 @@ NULL
 #'
 #' Following `gargle` best practices for sensitive APIs, `secretmanager` does
 #' **not** come with a built-in OAuth client or API key. You must configure
-#' your own via [secretmanager_auth_configure()] or provide a service account
+#' your own via [sm_auth_configure()] or provide a service account
 #' token via the `path` argument.
 #'
 #' @param email Optional. The email address of the Google identity you want to
@@ -51,26 +51,26 @@ NULL
 #' @examples
 #' \dontrun{
 #' # To configure your own OAuth client (do this once per project/user):
-#' secretmanager_auth_configure(
+#' sm_auth_configure(
 #'  path = "/path/to/your/oauth-client-secret.json"
 #' )
 #'
 #' # Authenticate (often not needed explicitly, called by API functions):
-#' secretmanager_auth()
+#' sm_auth()
 #'
 #' # Authenticate with a specific user:
-#' secretmanager_auth(email = "my_user@example.com")
+#' sm_auth(email = "my_user@example.com")
 #'
 #' # Authenticate using a service account:
-#' secretmanager_auth(path = "/path/to/your/service-account-key.json")
+#' sm_auth(path = "/path/to/your/service-account-key.json")
 #'
 #' # Authenticate using a pre-fetched token (like googleCloudStorageR example):
 #' token <- gargle::token_fetch(
 #'   scopes = "https://www.googleapis.com/auth/cloud-platform"
 #' )
-#' secretmanager_auth(token = token)
+#' sm_auth(token = token)
 #' }
-secretmanager_auth <- function(email = gargle::gargle_oauth_email(),
+sm_auth <- function(email = gargle::gargle_oauth_email(),
                                path = NULL,
                                scopes = "https://www.googleapis.com/auth/secretmanager", # Adjust if needed
                                cache = gargle::gargle_oauth_cache(),
@@ -82,19 +82,19 @@ secretmanager_auth <- function(email = gargle::gargle_oauth_email(),
     if (!inherits(token, "Token2.0")) {
       stop("The 'token' argument must be an object of class 'httr::Token2.0'.", call. = FALSE)
     }
-    .auth$set_cred(token)
-    .auth$set_auth_active(TRUE)
+    .sm_auth$set_cred(token)
+    .sm_auth$set_auth_active(TRUE)
     invisible()
   }
 
   # If no explicit token, proceed with token_fetch
-  gargle::check_is_service_account(path, hint = "secretmanager_auth_configure")
+  gargle::check_is_service_account(path, hint = "sm_auth_configure")
 
-  client <- secretmanager_oauth_client()
+  client <- sm_oauth_client()
   if (is.null(client) && is.null(path) && is.null(token)) {
     stop(
       "No OAuth client configured and no service account path or token provided.\n",
-      "Please configure an OAuth client using `secretmanager_auth_configure()`,\n",
+      "Please configure an OAuth client using `sm_auth_configure()`,\n",
       "or provide a service account token via the `path` argument or the `token` argument.",
       call. = FALSE
     )
@@ -118,8 +118,8 @@ secretmanager_auth <- function(email = gargle::gargle_oauth_email(),
     )
   }
 
-  .auth$set_cred(cred)
-  .auth$set_auth_active(TRUE)
+  .sm_auth$set_cred(cred)
+  .sm_auth$set_auth_active(TRUE)
 
   invisible()
 }
@@ -132,16 +132,16 @@ secretmanager_auth <- function(email = gargle::gargle_oauth_email(),
 #'
 #' @return Logical. `TRUE` if a token is available, `FALSE` otherwise.
 #' @keywords internal
-secretmanager_has_token <- function() {
-  inherits(.auth$cred, "Token2.0")
+sm_has_token <- function() {
+  inherits(.sm_auth$cred, "Token2.0")
 }
 
 #' Provide a token for Secret Manager API requests
 #'
 #' @description
 #' Retrieves the current token for Secret Manager. If authentication is active
-#' (`.auth$auth_active` is `TRUE`) and no token is cached, it will trigger
-#' [secretmanager_auth()] to obtain one.
+#' (`.sm_auth$auth_active` is `TRUE`) and no token is cached, it will trigger
+#' [sm_auth()] to obtain one.
 #'
 #' This function is typically used by other package functions that make API
 #' requests.
@@ -151,30 +151,30 @@ secretmanager_has_token <- function() {
 #' @examples
 #' \dontrun{
 #' # Configure auth first if needed (e.g., with your client ID)
-#' # secretmanager_auth_configure(path = "path/to/client.json")
-#' # secretmanager_auth() # or let it be called automatically
+#' # sm_auth_configure(path = "path/to/client.json")
+#' # sm_auth() # or let it be called automatically
 #'
-#' token <- secretmanager_token()
+#' token <- sm_token()
 #' if (!is.null(token)) {
 #'   # Use token in httr::GET() or other API calls
 #' }
 #' }
-secretmanager_token <- function() {
-  if (isFALSE(.auth$auth_active)) {
+sm_token <- function() {
+  if (isFALSE(.sm_auth$auth_active)) {
     # For Secret Manager, API key access is not typical for core operations.
     # If auth is inactive, it implies no authenticated requests should be made.
     return(NULL)
   }
-  if (!secretmanager_has_token()) {
-    secretmanager_auth() # Attempt to authenticate
+  if (!sm_has_token()) {
+    sm_auth() # Attempt to authenticate
   }
   # The token should be an httr::config object containing the Token2.0 object
-  # gargle::token_fetch returns a Token2.0 object, .auth$set_cred stores it.
+  # gargle::token_fetch returns a Token2.0 object, .sm_auth$set_cred stores it.
   # httr requests expect a Token2.0 object directly or an httr::config()
-  if (secretmanager_has_token()) {
-    return(httr::config(token = .auth$cred))
+  if (sm_has_token()) {
+    return(httr::config(token = .sm_auth$cred))
   } else {
-    # Should not happen if secretmanager_auth() was successful
+    # Should not happen if sm_auth() was successful
     # but as a fallback:
     return(NULL)
   }
@@ -185,7 +185,7 @@ secretmanager_token <- function() {
 #' @description
 #' Clears the current Secret Manager token. This means the next API request
 #' that requires authentication will trigger the authentication process anew
-#' (e.g., by calling [secretmanager_auth()]).
+#' (e.g., by calling [sm_auth()]).
 #'
 #' Since Secret Manager generally requires authentication for all its significant
 #' operations (and doesn't typically use API keys for accessing secrets),
@@ -196,16 +196,16 @@ secretmanager_token <- function() {
 #' @export
 #' @examples
 #' \dontrun{
-#' secretmanager_deauth()
+#' sm_deauth()
 #' # Next API call will re-trigger auth
 #' # list_secrets() # (Assuming this is a function in your package)
 #' }
-secretmanager_deauth <- function() {
+sm_deauth <- function() {
   # For APIs that always require a token (like Secret Manager for core ops),
   # deauth just clears the token. Auth remains active so next call triggers auth.
   # This follows the bigrquery model described in gargle documentation.
-  .auth$clear_cred()
-  .auth$set_auth_active(TRUE) # Keep auth active to re-trigger on next need
+  .sm_auth$clear_cred()
+  .sm_auth$set_auth_active(TRUE) # Keep auth active to re-trigger on next need
   invisible()
 }
 
@@ -236,19 +236,19 @@ secretmanager_deauth <- function() {
 #' @examples
 #' \dontrun{
 #' # Configure with an OAuth client downloaded from GCP
-#' secretmanager_auth_configure(
+#' sm_auth_configure(
 #'   path = "/path/to/your/oauth-client-secret.json"
 #' )
 #'
 #' # To configure with an API key (less common for Secret Manager):
-#' # secretmanager_auth_configure(api_key = "YOUR_API_KEY")
+#' # sm_auth_configure(api_key = "YOUR_API_KEY")
 #'
 #' # Check configured client:
-#' secretmanager_oauth_client()
+#' sm_oauth_client()
 #' }
-secretmanager_auth_configure <- function(path = NULL, client = NULL, api_key = NULL, app = NULL) {
+sm_auth_configure <- function(path = NULL, client = NULL, api_key = NULL, app = NULL) {
   if (!is.null(app)) {
-    lifecycle::deprecate_warn("1.0.0", "secretmanager_auth_configure(app = )", "secretmanager_auth_configure(client = )")
+    lifecycle::deprecate_warn("1.0.0", "sm_auth_configure(app = )", "sm_auth_configure(client = )")
     client <- app
   }
 
@@ -264,15 +264,15 @@ secretmanager_auth_configure <- function(path = NULL, client = NULL, api_key = N
     if (!inherits(client, "gargle_oauth_client")) {
       stop("`client` must be a `gargle_oauth_client` or `NULL`.", call. = FALSE)
     }
-    .auth$set_client(client)
+    .sm_auth$set_client(client)
   }
 
   if (!is.null(api_key)) {
     stopifnot(is.character(api_key), length(api_key) == 1) # Changed is.string to is.character & length check
-    .auth$set_api_key(api_key)
+    .sm_auth$set_api_key(api_key)
   }
 
-  invisible(.auth)
+  invisible(.sm_auth)
 }
 
 #' Retrieve the configured OAuth client
@@ -281,21 +281,21 @@ secretmanager_auth_configure <- function(path = NULL, client = NULL, api_key = N
 #' Returns the currently configured OAuth client for the `secretmanager` package.
 #' This client is used in the OAuth flow to obtain tokens.
 #' By default, this will be `NULL` until configured by the user via
-#' [secretmanager_auth_configure()].
+#' [sm_auth_configure()].
 #'
 #' @return A `gargle_oauth_client` object, or `NULL` if no client is configured.
 #' @export
 #' @examples
 #' \dontrun{
 #' # Configure client first
-#' # secretmanager_auth_configure(path = "/path/to/your/client.json")
-#' client <- secretmanager_oauth_client()
+#' # sm_auth_configure(path = "/path/to/your/client.json")
+#' client <- sm_oauth_client()
 #' if (!is.null(client)) {
 #'   print(client)
 #' }
 #' }
-secretmanager_oauth_client <- function() {
-  .auth$client
+sm_oauth_client <- function() {
+  .sm_auth$client
 }
 
 #' Retrieve the configured API key
@@ -310,14 +310,14 @@ secretmanager_oauth_client <- function() {
 #' @examples
 #' \dontrun{
 #' # Configure API key first (if applicable)
-#' # secretmanager_auth_configure(api_key = "YOUR_API_KEY")
-#' key <- secretmanager_api_key()
+#' # sm_auth_configure(api_key = "YOUR_API_KEY")
+#' key <- sm_api_key()
 #' if (!is.null(key)) {
 #'   print(key)
 #' }
 #' }
-secretmanager_api_key <- function() {
-  .auth$api_key
+sm_api_key <- function() {
+  .sm_auth$api_key
 }
 
 #' Get information about the authenticated user
@@ -328,29 +328,29 @@ secretmanager_api_key <- function() {
 #' It attempts to retrieve this information from the token itself.
 #'
 #' @param token An optional token object. If `NULL`, uses the cached token
-#'   obtained by [secretmanager_token()].
+#'   obtained by [sm_token()].
 #' @return A list containing user information (e.g., email) or `NULL` if
 #'   no token is available or user information cannot be parsed.
 #' @export
 #' @examples
 #' \dontrun{
 #' # Authenticate first
-#' # secretmanager_auth()
+#' # sm_auth()
 #'
-#' user_info <- secretmanager_user()
+#' user_info <- sm_user()
 #' if (!is.null(user_info)) {
 #'   print(user_info$email)
 #' }
 #' }
-secretmanager_user <- function(token = NULL) {
+sm_user <- function(token = NULL) {
   if (is.null(token)) {
-    # Ensure we have a token by calling secretmanager_token(),
-    # which internally calls secretmanager_auth() if needed.
+    # Ensure we have a token by calling sm_token(),
+    # which internally calls sm_auth() if needed.
     # We need the actual Token2.0 object, not the httr::config() wrapper.
-    if (!secretmanager_has_token()) {
-      secretmanager_token() # This triggers auth and populates .auth$cred
+    if (!sm_has_token()) {
+      sm_token() # This triggers auth and populates .sm_auth$cred
     }
-    token_obj <- .auth$cred
+    token_obj <- .sm_auth$cred
   } else {
     token_obj <- token
   }
