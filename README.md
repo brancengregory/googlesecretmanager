@@ -1,10 +1,37 @@
-# secretmanager
+# secretmanager 🔐
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-An R package for interacting with Google Cloud Secret Manager, providing a secure way to manage and access secrets in your R applications.
+> Keep your secrets safe and sound in the cloud! 🚀
+
+An R package that makes it easy and secure to manage your secrets using Google Cloud Secret Manager. Whether you're building a Shiny app, running R scripts in production, or managing sensitive configuration, `secretmanager` has got you covered!
+
+```mermaid
+graph LR
+    A[R Application] -->|secretmanager| B[Google Cloud Secret Manager]
+    B -->|Secure Storage| C[Secrets]
+    B -->|Version Control| D[Secret Versions]
+    B -->|Access Control| E[IAM Permissions]
+```
+
+## Quick Start 🚀
+
+```r
+# Install the package
+remotes::install_github("brancengregory/secretmanager")
+
+# Load and authenticate (opens browser)
+library(secretmanager)
+gargle::credentials_app_default()
+
+# Start managing secrets!
+sm_project_set("my-project-id")
+sm_secret_create("api-key", replication = list(automatic = list()))
+sm_secret_version_add("api-key", "your-secret-value")
+```
 
 ## Installation
 
@@ -15,131 +42,136 @@ You can install the development version of secretmanager from GitHub using:
 remotes::install_github("brancengregory/secretmanager")
 ```
 
-## Authentication
+## Authentication 🔑
 
-This package uses the [gargle](https://gargle.r-lib.org/) package for authentication with Google Cloud services. Before using the package, you'll need to:
+This package uses [gargle](https://gargle.r-lib.org/) for secure authentication with Google Cloud. Choose your preferred method:
 
-1. Set up authentication credentials for Google Cloud
-2. Ensure you have the necessary permissions to access Secret Manager
-
-### Authentication Methods
-
-There are three ways to authenticate with Google Cloud Secret Manager:
-
-#### 1. Explicit Token Authentication
+### 1. Quick & Easy: Application Default Credentials
 ```r
 library(secretmanager)
-library(gargle)
-
-# Define required scopes and fetch token
-scopes <- c("https://www.googleapis.com/auth/cloud-platform")
-token <- gargle::token_fetch(scopes = scopes)
-
-# Initialize the package with the token
-secretmanager_auth(token = token)
+gargle::credentials_app_default()  # Opens browser for authentication
 ```
 
-#### 2. Application Default Credentials
+### 2. Production Ready: Service Account
 ```r
 library(secretmanager)
-library(gargle)
-
-# This will open a browser window for authentication
-gargle::credentials_app_default()
-```
-
-#### 3. Service Account Key
-```r
-library(secretmanager)
-library(gargle)
-
-# Set the path to your service account key file
 gargle::credentials_service_account(
   path = "path/to/service-account-key.json"
 )
 ```
 
-Choose the authentication method that best fits your use case. The explicit token method provides the most control, application default credentials are convenient for local development, and service account keys are useful for automated environments.
-
-## Usage
-
-Here's a basic example of how to use the package:
-
+### 3. Advanced: Explicit Token
 ```r
 library(secretmanager)
-
-# Set your project ID
-sm_project_set("my-project-id")
-
-# List all secrets in the project
-secrets <- sm_secret_ls()
-
-# Get metadata for a specific secret
-secret <- sm_secret_get("my-secret-id")
-
-# Create a new secret
-new_secret <- sm_secret_create(
-  secret_id = "my-new-secret",
-  replication = list(automatic = list())
+token <- gargle::token_fetch(
+  scopes = "https://www.googleapis.com/auth/cloud-platform"
 )
-
-# Add a version to a secret
-version <- sm_secret_version_add(
-  secret_id = "my-secret",
-  payload = "my-secret-value"
-)
-
-# List versions of a secret
-versions <- sm_secret_version_ls("my-secret")
-
-# Delete a secret version
-sm_secret_version_delete(
-  secret_id = "my-secret",
-  version_id = "latest"
-)
-
-# Delete a secret
-sm_secret_delete("my-secret")
+secretmanager_auth(token = token)
 ```
 
-## Features
+## Common Use Cases 🎯
 
-- Secure access to Google Cloud Secret Manager
-- Easy integration with gargle authentication
-- Support for:
-  - Creating, reading, updating, and deleting secrets
-  - Managing secret versions
-  - Base64 encoding/decoding of secret values
-  - Comprehensive error handling
-  - Project-level operations
-  - Secret metadata management
+### 1. Managing API Keys
+```r
+# Store an API key
+sm_secret_create("stripe-api-key")
+sm_secret_version_add("stripe-api-key", "sk_live_...")
 
-## Development
+# Retrieve in your application
+api_key <- sm_secret_version_get("stripe-api-key")
+```
 
-This package uses the following development tools:
+### 2. Configuration Management
+```r
+# Store database credentials
+db_config <- list(
+  host = "db.example.com",
+  user = "admin",
+  password = "secret123"
+)
+sm_secret_create("db-config")
+sm_secret_version_add("db-config", jsonlite::toJSON(db_config))
 
-- testthat for testing
-- roxygen2 for documentation
-- renv for dependency management
+# Use in your application
+config <- jsonlite::fromJSON(sm_secret_version_get("db-config"))
+```
 
-## Contributing
+### 3. Rotating Secrets
+```r
+# Add a new version
+sm_secret_version_add("api-key", "new-secret-value")
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+# List versions
+versions <- sm_secret_version_ls("api-key")
 
-## Security
+# Delete old versions
+sm_secret_version_delete("api-key", "old-version-id")
+```
 
-This package handles sensitive information. Please ensure you:
+## Features ✨
 
-1. Secrets may be printed to the R console and live in logs
-2. Never commit credentials or secrets to version control
-2. Use appropriate access controls in Google Cloud
-3. Follow security best practices when handling secrets
+- 🔒 Secure secret management with Google Cloud
+- 🔄 Version control for secrets
+- 🔐 Multiple authentication methods
+- 📦 Easy integration with R applications
+- 🛠️ Comprehensive API coverage
+- ⚡ Efficient secret retrieval
+- 🎯 Project-level operations
+- 📝 Detailed error messages
 
-## Getting Help
+## Security Best Practices 🛡️
 
-If you encounter any issues or have questions, please:
+1. **Never** commit secrets to version control
+2. Use appropriate IAM roles and permissions
+3. Rotate secrets regularly
+4. Enable audit logging in Google Cloud
+5. Use service accounts for production
+6. Keep your R session secure
+7. Be cautious with secret output in logs
 
-1. Check the [documentation](https://brancengregory.github.io/secretmanager/)
-2. Review the [gargle documentation](https://gargle.r-lib.org/)
-3. Open an [issue](https://github.com/brancengregory/secretmanager/issues)
+## Troubleshooting 🔧
+
+### Common Issues
+
+1. **Authentication Failed**
+   - Check your Google Cloud credentials
+   - Verify project permissions
+   - Ensure correct scopes are set
+
+2. **Secret Not Found**
+   - Verify project ID
+   - Check secret name spelling
+   - Confirm secret exists in Google Cloud Console
+
+3. **Permission Denied**
+   - Review IAM roles
+   - Check service account permissions
+   - Verify project access
+
+## Development 🛠️
+
+This package is built with:
+
+- [testthat](https://testthat.r-lib.org/) for testing
+- [roxygen2](https://roxygen2.r-lib.org/) for documentation
+- [renv](https://rstudio.github.io/renv/) for dependency management
+
+## Contributing 🤝
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Submit a pull request
+
+## Getting Help 💬
+
+- 📚 [Package Documentation](https://brancengregory.github.io/secretmanager/)
+- 🔍 [Google Cloud Secret Manager Docs](https://cloud.google.com/secret-manager)
+- 🐛 [Report Issues](https://github.com/brancengregory/secretmanager/issues)
+
+## License 📄
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

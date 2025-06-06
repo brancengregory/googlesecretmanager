@@ -1,8 +1,33 @@
+# secretmanager 0.1.0
+
+* Breaking change: Renamed all functions to use `sm_` prefix for consistency
+  * `create_secret()` → `sm_secret_create()`
+  * `get_secret()` → `sm_secret_get()`
+  * `list_secrets()` → `sm_secret_ls()`
+  * `add_version()` → `sm_secret_version_add()`
+  * `get_version()` → `sm_secret_version_get()`
+  * `list_versions()` → `sm_secret_version_ls()`
+  * `delete_version()` → `sm_secret_version_delete()`
+  * `delete_secret()` → `sm_secret_delete()`
+* Added S3 class system for better object-oriented handling of secrets
+* Added project management functions `sm_project_set()` and `sm_project_get()`
+* Enhanced error handling with more informative messages
+* Improved secret metadata handling and type validation
+* Fixed issues with secret version retrieval and deletion
+* Streamlined authentication process
+
 # secretmanager 0.0.2
 
-* Adds a secret class for specialized methods
-* Implements a print method for the secret class that hides the secret value from R output
+* Added `secret` class with specialized methods
+* Implemented secure print method to hide secret values in R output
+* Added support for secret metadata
+* Enhanced error messages and token handling
+* Improved documentation and examples
 
 # secretmanager 0.0.1
 
-* Basic implementation of secret creation and latest version access
+* Initial release with core Google Cloud Secret Manager integration
+* Basic secret management: creation, versioning, and retrieval
+* Integration with gargle for authentication
+* Support for multiple auth methods (Application Default Credentials, Service Account, Explicit Token)
+* Basic project management functionality
