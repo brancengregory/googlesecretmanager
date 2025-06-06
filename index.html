@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">secretmanager</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,166 +46,215 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="secretmanager">secretmanager<a class="anchor" aria-label="anchor" href="#secretmanager"></a>
+<div class="page-header"><h1 id="secretmanager-">secretmanager 🔐<a class="anchor" aria-label="anchor" href="#secretmanager-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>An R package for interacting with Google Cloud Secret Manager, providing a secure way to manage and access secrets in your R applications.</p>
+<blockquote>
+<p>Keep your secrets safe and sound in the cloud! 🚀</p>
+</blockquote>
+<p>An R package that makes it easy and secure to manage your secrets using Google Cloud Secret Manager. Whether you’re building a Shiny app, running R scripts in production, or managing sensitive configuration, <code>secretmanager</code> has got you covered!</p>
+<div class="section level2">
+<h2 id="quick-start-">Quick Start 🚀<a class="anchor" aria-label="anchor" href="#quick-start-"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install the package</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"brancengregory/secretmanager"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load and authenticate (opens browser)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://brancengregory.github.io/secretmanager/">secretmanager</a></span><span class="op">)</span></span>
+<span><span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/credentials_app_default.html" class="external-link">credentials_app_default</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Start managing secrets!</span></span>
+<span><span class="fu"><a href="reference/sm_project_set.html">sm_project_set</a></span><span class="op">(</span><span class="st">"my-project-id"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sm_secret_create.html">sm_secret_create</a></span><span class="op">(</span><span class="st">"api-key"</span>, replication <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>automatic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sm_secret_version_add.html">sm_secret_version_add</a></span><span class="op">(</span><span class="st">"api-key"</span>, <span class="st">"your-secret-value"</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of secretmanager from GitHub using:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"brancengregory/secretmanager"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a>
+<h2 id="authentication-">Authentication 🔑<a class="anchor" aria-label="anchor" href="#authentication-"></a>
 </h2>
-<p>This package uses the <a href="https://gargle.r-lib.org/" class="external-link">gargle</a> package for authentication with Google Cloud services. Before using the package, you’ll need to:</p>
-<ol style="list-style-type: decimal">
-<li>Set up authentication credentials for Google Cloud</li>
-<li>Ensure you have the necessary permissions to access Secret Manager</li>
-</ol>
+<p>This package uses <a href="https://gargle.r-lib.org/" class="external-link">gargle</a> for secure authentication with Google Cloud. Choose your preferred method:</p>
 <div class="section level3">
-<h3 id="authentication-methods">Authentication Methods<a class="anchor" aria-label="anchor" href="#authentication-methods"></a>
+<h3 id="id_1-quick--easy-application-default-credentials">1. Quick &amp; Easy: Application Default Credentials<a class="anchor" aria-label="anchor" href="#id_1-quick--easy-application-default-credentials"></a>
 </h3>
-<p>There are three ways to authenticate with Google Cloud Secret Manager:</p>
-<div class="section level4">
-<h4 id="id_1-explicit-token-authentication">1. Explicit Token Authentication<a class="anchor" aria-label="anchor" href="#id_1-explicit-token-authentication"></a>
-</h4>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://brancengregory.github.io/secretmanager/">secretmanager</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gargle.r-lib.org" class="external-link">gargle</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define required scopes and fetch token</span></span>
-<span><span class="va">scopes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://www.googleapis.com/auth/cloud-platform"</span><span class="op">)</span></span>
-<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/token_fetch.html" class="external-link">token_fetch</a></span><span class="op">(</span>scopes <span class="op">=</span> <span class="va">scopes</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Initialize the package with the token</span></span>
-<span><span class="fu">secretmanager_auth</span><span class="op">(</span>token <span class="op">=</span> <span class="va">token</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="id_2-application-default-credentials">2. Application Default Credentials<a class="anchor" aria-label="anchor" href="#id_2-application-default-credentials"></a>
-</h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://brancengregory.github.io/secretmanager/">secretmanager</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gargle.r-lib.org" class="external-link">gargle</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># This will open a browser window for authentication</span></span>
-<span><span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/credentials_app_default.html" class="external-link">credentials_app_default</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/credentials_app_default.html" class="external-link">credentials_app_default</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Opens browser for authentication</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="id_3-service-account-key">3. Service Account Key<a class="anchor" aria-label="anchor" href="#id_3-service-account-key"></a>
-</h4>
+<div class="section level3">
+<h3 id="id_2-production-ready-service-account">2. Production Ready: Service Account<a class="anchor" aria-label="anchor" href="#id_2-production-ready-service-account"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://brancengregory.github.io/secretmanager/">secretmanager</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gargle.r-lib.org" class="external-link">gargle</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Set the path to your service account key file</span></span>
 <span><span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/credentials_service_account.html" class="external-link">credentials_service_account</a></span><span class="op">(</span></span>
 <span>  path <span class="op">=</span> <span class="st">"path/to/service-account-key.json"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Choose the authentication method that best fits your use case. The explicit token method provides the most control, application default credentials are convenient for local development, and service account keys are useful for automated environments.</p>
 </div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h2>
-<p>Here’s a basic example of how to use the package:</p>
+<div class="section level3">
+<h3 id="id_3-advanced-explicit-token">3. Advanced: Explicit Token<a class="anchor" aria-label="anchor" href="#id_3-advanced-explicit-token"></a>
+</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://brancengregory.github.io/secretmanager/">secretmanager</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Set your project ID</span></span>
-<span><span class="fu"><a href="reference/sm_project_set.html">sm_project_set</a></span><span class="op">(</span><span class="st">"my-project-id"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># List all secrets in the project</span></span>
-<span><span class="va">secrets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_ls.html">sm_secret_ls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get metadata for a specific secret</span></span>
-<span><span class="va">secret</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_get.html">sm_secret_get</a></span><span class="op">(</span><span class="st">"my-secret-id"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create a new secret</span></span>
-<span><span class="va">new_secret</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_create.html">sm_secret_create</a></span><span class="op">(</span></span>
-<span>  secret_id <span class="op">=</span> <span class="st">"my-new-secret"</span>,</span>
-<span>  replication <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>automatic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu">gargle</span><span class="fu">::</span><span class="fu"><a href="https://gargle.r-lib.org/reference/token_fetch.html" class="external-link">token_fetch</a></span><span class="op">(</span></span>
+<span>  scopes <span class="op">=</span> <span class="st">"https://www.googleapis.com/auth/cloud-platform"</span></span>
 <span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add a version to a secret</span></span>
-<span><span class="va">version</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_version_add.html">sm_secret_version_add</a></span><span class="op">(</span></span>
-<span>  secret_id <span class="op">=</span> <span class="st">"my-secret"</span>,</span>
-<span>  payload <span class="op">=</span> <span class="st">"my-secret-value"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># List versions of a secret</span></span>
-<span><span class="va">versions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_version_ls.html">sm_secret_version_ls</a></span><span class="op">(</span><span class="st">"my-secret"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Delete a secret version</span></span>
-<span><span class="fu"><a href="reference/sm_secret_version_delete.html">sm_secret_version_delete</a></span><span class="op">(</span></span>
-<span>  secret_id <span class="op">=</span> <span class="st">"my-secret"</span>,</span>
-<span>  version_id <span class="op">=</span> <span class="st">"latest"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Delete a secret</span></span>
-<span><span class="fu"><a href="reference/sm_secret_delete.html">sm_secret_delete</a></span><span class="op">(</span><span class="st">"my-secret"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">secretmanager_auth</span><span class="op">(</span>token <span class="op">=</span> <span class="va">token</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+<h2 id="common-use-cases-">Common Use Cases 🎯<a class="anchor" aria-label="anchor" href="#common-use-cases-"></a>
+</h2>
+<div class="section level3">
+<h3 id="id_1-managing-api-keys">1. Managing API Keys<a class="anchor" aria-label="anchor" href="#id_1-managing-api-keys"></a>
+</h3>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Store an API key</span></span>
+<span><span class="fu"><a href="reference/sm_secret_create.html">sm_secret_create</a></span><span class="op">(</span><span class="st">"stripe-api-key"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sm_secret_version_add.html">sm_secret_version_add</a></span><span class="op">(</span><span class="st">"stripe-api-key"</span>, <span class="st">"sk_live_..."</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Retrieve in your application</span></span>
+<span><span class="va">api_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_version_get.html">sm_secret_version_get</a></span><span class="op">(</span><span class="st">"stripe-api-key"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_2-configuration-management">2. Configuration Management<a class="anchor" aria-label="anchor" href="#id_2-configuration-management"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Store database credentials</span></span>
+<span><span class="va">db_config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  host <span class="op">=</span> <span class="st">"db.example.com"</span>,</span>
+<span>  user <span class="op">=</span> <span class="st">"admin"</span>,</span>
+<span>  password <span class="op">=</span> <span class="st">"secret123"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sm_secret_create.html">sm_secret_create</a></span><span class="op">(</span><span class="st">"db-config"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/sm_secret_version_add.html">sm_secret_version_add</a></span><span class="op">(</span><span class="st">"db-config"</span>, <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">toJSON</a></span><span class="op">(</span><span class="va">db_config</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use in your application</span></span>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="fu"><a href="reference/sm_secret_version_get.html">sm_secret_version_get</a></span><span class="op">(</span><span class="st">"db-config"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="id_3-rotating-secrets">3. Rotating Secrets<a class="anchor" aria-label="anchor" href="#id_3-rotating-secrets"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Add a new version</span></span>
+<span><span class="fu"><a href="reference/sm_secret_version_add.html">sm_secret_version_add</a></span><span class="op">(</span><span class="st">"api-key"</span>, <span class="st">"new-secret-value"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List versions</span></span>
+<span><span class="va">versions</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sm_secret_version_ls.html">sm_secret_version_ls</a></span><span class="op">(</span><span class="st">"api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Delete old versions</span></span>
+<span><span class="fu"><a href="reference/sm_secret_version_delete.html">sm_secret_version_delete</a></span><span class="op">(</span><span class="st">"api-key"</span>, <span class="st">"old-version-id"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="features-">Features ✨<a class="anchor" aria-label="anchor" href="#features-"></a>
 </h2>
 <ul>
-<li>Secure access to Google Cloud Secret Manager</li>
-<li>Easy integration with gargle authentication</li>
-<li>Support for:
-<ul>
-<li>Creating, reading, updating, and deleting secrets</li>
-<li>Managing secret versions</li>
-<li>Base64 encoding/decoding of secret values</li>
-<li>Comprehensive error handling</li>
-<li>Project-level operations</li>
-<li>Secret metadata management</li>
-</ul>
-</li>
+<li>🔒 Secure secret management with Google Cloud</li>
+<li>🔄 Version control for secrets</li>
+<li>🔐 Multiple authentication methods</li>
+<li>📦 Easy integration with R applications</li>
+<li>🛠️ Comprehensive API coverage</li>
+<li>⚡ Efficient secret retrieval</li>
+<li>🎯 Project-level operations</li>
+<li>📝 Detailed error messages</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="development">Development<a class="anchor" aria-label="anchor" href="#development"></a>
+<h2 id="security-best-practices-️">Security Best Practices 🛡️<a class="anchor" aria-label="anchor" href="#security-best-practices-%EF%B8%8F"></a>
 </h2>
-<p>This package uses the following development tools:</p>
-<ul>
-<li>testthat for testing</li>
-<li>roxygen2 for documentation</li>
-<li>renv for dependency management</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h2>
-<p>Contributions are welcome! Please feel free to submit a Pull Request.</p>
-</div>
-<div class="section level2">
-<h2 id="security">Security<a class="anchor" aria-label="anchor" href="#security"></a>
-</h2>
-<p>This package handles sensitive information. Please ensure you:</p>
 <ol style="list-style-type: decimal">
-<li>Secrets may be printed to the R console and live in logs</li>
-<li>Never commit credentials or secrets to version control</li>
-<li>Use appropriate access controls in Google Cloud</li>
-<li>Follow security best practices when handling secrets</li>
+<li>
+<strong>Never</strong> commit secrets to version control</li>
+<li>Use appropriate IAM roles and permissions</li>
+<li>Rotate secrets regularly</li>
+<li>Enable audit logging in Google Cloud</li>
+<li>Use service accounts for production</li>
+<li>Keep your R session secure</li>
+<li>Be cautious with secret output in logs</li>
 </ol>
 </div>
 <div class="section level2">
-<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+<h2 id="troubleshooting-">Troubleshooting 🔧<a class="anchor" aria-label="anchor" href="#troubleshooting-"></a>
 </h2>
-<p>If you encounter any issues or have questions, please:</p>
+<div class="section level3">
+<h3 id="common-issues">Common Issues<a class="anchor" aria-label="anchor" href="#common-issues"></a>
+</h3>
 <ol style="list-style-type: decimal">
-<li>Check the <a href="https://brancengregory.github.io/secretmanager/">documentation</a>
+<li>
+<strong>Authentication Failed</strong>
+<ul>
+<li>Check your Google Cloud credentials</li>
+<li>Verify project permissions</li>
+<li>Ensure correct scopes are set</li>
+</ul>
 </li>
-<li>Review the <a href="https://gargle.r-lib.org/" class="external-link">gargle documentation</a>
+<li>
+<strong>Secret Not Found</strong>
+<ul>
+<li>Verify project ID</li>
+<li>Check secret name spelling</li>
+<li>Confirm secret exists in Google Cloud Console</li>
+</ul>
 </li>
-<li>Open an <a href="https://github.com/brancengregory/secretmanager/issues" class="external-link">issue</a>
+<li>
+<strong>Permission Denied</strong>
+<ul>
+<li>Review IAM roles</li>
+<li>Check service account permissions</li>
+<li>Verify project access</li>
+</ul>
 </li>
 </ol>
+</div>
+</div>
+<div class="section level2">
+<h2 id="development-️">Development 🛠️<a class="anchor" aria-label="anchor" href="#development-%EF%B8%8F"></a>
+</h2>
+<p>This package is built with:</p>
+<ul>
+<li>
+<a href="https://testthat.r-lib.org/" class="external-link">testthat</a> for testing</li>
+<li>
+<a href="https://roxygen2.r-lib.org/" class="external-link">roxygen2</a> for documentation</li>
+<li>
+<a href="https://rstudio.github.io/renv/" class="external-link">renv</a> for dependency management</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="contributing-">Contributing 🤝<a class="anchor" aria-label="anchor" href="#contributing-"></a>
+</h2>
+<p>Contributions are welcome! Please:</p>
+<ol style="list-style-type: decimal">
+<li>Fork the repository</li>
+<li>Create a feature branch</li>
+<li>Add tests for new functionality</li>
+<li>Submit a pull request</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="getting-help-">Getting Help 💬<a class="anchor" aria-label="anchor" href="#getting-help-"></a>
+</h2>
+<ul>
+<li>📚 <a href="https://brancengregory.github.io/secretmanager/">Package Documentation</a>
+</li>
+<li>🔍 <a href="https://cloud.google.com/secret-manager" class="external-link">Google Cloud Secret Manager Docs</a>
+</li>
+<li>🐛 <a href="https://github.com/brancengregory/secretmanager/issues" class="external-link">Report Issues</a>
+</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="license-">License 📄<a class="anchor" aria-label="anchor" href="#license-"></a>
+</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -235,6 +284,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
 </ul>
 </div>
 
