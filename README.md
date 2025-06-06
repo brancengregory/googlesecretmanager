@@ -9,14 +9,6 @@
 
 An R package that makes it easy and secure to manage your secrets using Google Cloud Secret Manager. Whether you're building a Shiny app, running R scripts in production, or managing sensitive configuration, `secretmanager` has got you covered!
 
-```mermaid
-graph LR
-    A[R Application] -->|secretmanager| B[Google Cloud Secret Manager]
-    B -->|Secure Storage| C[Secrets]
-    B -->|Version Control| D[Secret Versions]
-    B -->|Access Control| E[IAM Permissions]
-```
-
 ## Quick Start 🚀
 
 ```r
