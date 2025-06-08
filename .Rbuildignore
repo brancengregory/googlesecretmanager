@@ -1,6 +1,6 @@
 ^renv$
 ^renv\.lock$
-^secretmanager\.Rproj$
+^googlesecretmanager\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
 ^_pkgdown\.yml$
