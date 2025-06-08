@@ -18,7 +18,7 @@ NULL
 #' directly by the user to pre-authenticate or to switch identities, scopes,
 #' or authentication methods (e.g., user OAuth, service account token).
 #'
-#' Following `gargle` best practices for sensitive APIs, `secretmanager` does
+#' Following `gargle` best practices for sensitive APIs, `googlesecretmanager` does
 #' **not** come with a built-in OAuth client or API key. You must configure
 #' your own via [sm_auth_configure()] or provide a service account
 #' token via the `path` argument.
@@ -105,7 +105,7 @@ sm_auth <- function(email = gargle::gargle_oauth_email(),
     client = client,
     email = email,
     path = path,
-    package = "secretmanager", # Important for caching and user messages
+    package = "googlesecretmanager", # Important for caching and user messages
     cache = cache,
     use_oob = use_oob,
     token = token # This token argument is for gargle::token_fetch's internal logic
@@ -215,7 +215,7 @@ sm_deauth <- function() {
 #' This function allows advanced users to provide their own OAuth client ID and
 #' secret (from a JSON file downloaded from Google Cloud Console) or an API key.
 #'
-#' **OAuth Client**: For `secretmanager`, providing your own OAuth client is
+#' **OAuth Client**: For `googlesecretmanager`, providing your own OAuth client is
 #' **highly recommended** as the package does not ship with a default client
 #' due to the sensitive nature of the API.
 #'
@@ -278,7 +278,7 @@ sm_auth_configure <- function(path = NULL, client = NULL, api_key = NULL, app = 
 #' Retrieve the configured OAuth client
 #'
 #' @description
-#' Returns the currently configured OAuth client for the `secretmanager` package.
+#' Returns the currently configured OAuth client for the `googlesecretmanager` package.
 #' This client is used in the OAuth flow to obtain tokens.
 #' By default, this will be `NULL` until configured by the user via
 #' [sm_auth_configure()].
@@ -301,7 +301,7 @@ sm_oauth_client <- function() {
 #' Retrieve the configured API key
 #'
 #' @description
-#' Returns the currently configured API key for the `secretmanager` package.
+#' Returns the currently configured API key for the `googlesecretmanager` package.
 #' Note: API keys have limited use with Secret Manager, which primarily relies
 #' on OAuth2.0.
 #'

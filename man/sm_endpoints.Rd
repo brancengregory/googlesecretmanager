@@ -13,10 +13,10 @@ returned.}
 }
 \value{
 One or more of the Secret Manager API v1 endpoints that are used internally by
-secretmanager.
+googlesecretmanager.
 }
 \description{
-The secretmanager package stores a named list of Secret Manager API v1 endpoints (or
+The googlesecretmanager package stores a named list of Secret Manager API v1 endpoints (or
 "methods", using Google's vocabulary) internally and these functions expose
 this data.
 \itemize{

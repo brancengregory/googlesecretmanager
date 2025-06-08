@@ -10,7 +10,7 @@ sm_api_key()
 A string containing the API key, or \code{NULL} if no key is configured.
 }
 \description{
-Returns the currently configured API key for the \code{secretmanager} package.
+Returns the currently configured API key for the \code{googlesecretmanager} package.
 Note: API keys have limited use with Secret Manager, which primarily relies
 on OAuth2.0.
 }

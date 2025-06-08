@@ -1,22 +1,22 @@
 # googlesecretmanager 🔐
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brancengregory/secretmanager/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/brancengregory/googlesecretmanager/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/brancengregory/googlesecretmanager/actions/workflows/R-CMD-check.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
 > Keep your secrets safe and sound in the cloud! 🚀
 
-An R package that makes it easy and secure to manage your secrets using Google Cloud Secret Manager. Whether you're building a Shiny app, running R scripts in production, or managing sensitive configuration, `secretmanager` has got you covered!
+An R package that makes it easy and secure to manage your secrets using Google Cloud Secret Manager. Whether you're building a Shiny app, running R scripts in production, or managing sensitive configuration, `googlesecretmanager` has got you covered!
 
 ## Quick Start 🚀
 
 ```r
 # Install the package
-remotes::install_github("brancengregory/secretmanager")
+remotes::install_github("brancengregory/googlesecretmanager")
 
 # Load and authenticate (opens browser)
-library(secretmanager)
+library(googlesecretmanager)
 gargle::credentials_app_default()
 
 # Start managing secrets!
@@ -27,11 +27,11 @@ sm_secret_version_add("api-key", "your-secret-value")
 
 ## Installation
 
-You can install the development version of secretmanager from GitHub using:
+You can install the development version of googlesecretmanager from GitHub using:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("brancengregory/secretmanager")
+remotes::install_github("brancengregory/googlesecretmanager")
 ```
 
 ## Authentication 🔑
@@ -40,13 +40,13 @@ This package uses [gargle](https://gargle.r-lib.org/) for secure authentication 
 
 ### 1. Quick & Easy: Application Default Credentials
 ```r
-library(secretmanager)
+library(googlesecretmanager)
 gargle::credentials_app_default()  # Opens browser for authentication
 ```
 
 ### 2. Production Ready: Service Account
 ```r
-library(secretmanager)
+library(googlesecretmanager)
 gargle::credentials_service_account(
   path = "path/to/service-account-key.json"
 )
@@ -54,11 +54,11 @@ gargle::credentials_service_account(
 
 ### 3. Advanced: Explicit Token
 ```r
-library(secretmanager)
+library(googlesecretmanager)
 token <- gargle::token_fetch(
   scopes = "https://www.googleapis.com/auth/cloud-platform"
 )
-secretmanager_auth(token = token)
+googlesecretmanager_auth(token = token)
 ```
 
 ## Common Use Cases 🎯
@@ -159,9 +159,9 @@ Contributions are welcome! Please:
 
 ## Getting Help 💬
 
-- 📚 [Package Documentation](https://brancengregory.github.io/secretmanager/)
+- 📚 [Package Documentation](https://brancengregory.github.io/googlesecretmanager/)
 - 🔍 [Google Cloud Secret Manager Docs](https://cloud.google.com/secret-manager)
-- 🐛 [Report Issues](https://github.com/brancengregory/secretmanager/issues)
+- 🐛 [Report Issues](https://github.com/brancengregory/googlesecretmanager/issues)
 
 ## License 📄
 

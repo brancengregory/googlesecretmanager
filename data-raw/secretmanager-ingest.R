@@ -3,7 +3,7 @@ library(tidyverse)
 devtools::load_all()
 
 source(
-  system.file("data-raw", "ingest-functions.R", package = "secretmanager")
+  system.file("data-raw", "ingest-functions.R", package = "googlesecretmanager")
 )
 
 existing <- list_discovery_documents("secretmanager:v1")

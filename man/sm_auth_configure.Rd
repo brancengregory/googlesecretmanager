@@ -24,7 +24,7 @@ Invisibly returns the updated auth configuration (an \code{AuthState} object).
 This function allows advanced users to provide their own OAuth client ID and
 secret (from a JSON file downloaded from Google Cloud Console) or an API key.
 
-\strong{OAuth Client}: For \code{secretmanager}, providing your own OAuth client is
+\strong{OAuth Client}: For \code{googlesecretmanager}, providing your own OAuth client is
 \strong{highly recommended} as the package does not ship with a default client
 due to the sensitive nature of the API.
 

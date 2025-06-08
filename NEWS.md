@@ -1,4 +1,4 @@
-# secretmanager 0.1.0
+# googlesecretmanager 0.1.0
 
 * Breaking change: Renamed all functions to use `sm_` prefix for consistency
   * `create_secret()` → `sm_secret_create()`
@@ -16,7 +16,7 @@
 * Fixed issues with secret version retrieval and deletion
 * Streamlined authentication process
 
-# secretmanager 0.0.2
+# googlesecretmanager 0.0.2
 
 * Added `secret` class with specialized methods
 * Implemented secure print method to hide secret values in R output
@@ -24,7 +24,7 @@
 * Enhanced error messages and token handling
 * Improved documentation and examples
 
-# secretmanager 0.0.1
+# googlesecretmanager 0.0.1
 
 * Initial release with core Google Cloud Secret Manager integration
 * Basic secret management: creation, versioning, and retrieval

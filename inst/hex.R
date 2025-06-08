@@ -18,7 +18,7 @@ icon_plot <- ggplot() +
 sticker(
   subplot = icon_plot,        # Use the ggplot object for the icon
   s_x = 1, s_y = 0.9, s_width = 0.6, s_height = 0.6, # Position and size of the icon
-  package = "secretmanager",  # The package name
+  package = "googlesecretmanager",  # The package name
   p_size = 8,                 # Font size of the package name
   p_x = 1, p_y = 0.4,         # Position of the package name
   p_color = text_color,       # Color of the package name text

@@ -51,7 +51,7 @@ called automatically when the first token is needed, or it can be called
 directly by the user to pre-authenticate or to switch identities, scopes,
 or authentication methods (e.g., user OAuth, service account token).
 
-Following \code{gargle} best practices for sensitive APIs, \code{secretmanager} does
+Following \code{gargle} best practices for sensitive APIs, \code{googlesecretmanager} does
 \strong{not} come with a built-in OAuth client or API key. You must configure
 your own via \code{\link[=sm_auth_configure]{sm_auth_configure()}} or provide a service account
 token via the \code{path} argument.

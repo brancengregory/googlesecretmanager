@@ -1,4 +1,4 @@
-Package: secretmanager
+Package: googlesecretmanager
 Title: Manage Google Cloud Platform Secrets with R
 Version: 0.1.0
 Authors@R: 
@@ -22,4 +22,4 @@ Imports:
     utils
 Depends: 
     R (>= 4.0)
-URL: https://brancengregory.github.io/secretmanager/
+URL: https://brancengregory.github.io/googlesecretmanager/

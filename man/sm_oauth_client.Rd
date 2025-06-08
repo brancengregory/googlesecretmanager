@@ -10,7 +10,7 @@ sm_oauth_client()
 A \code{gargle_oauth_client} object, or \code{NULL} if no client is configured.
 }
 \description{
-Returns the currently configured OAuth client for the \code{secretmanager} package.
+Returns the currently configured OAuth client for the \code{googlesecretmanager} package.
 This client is used in the OAuth flow to obtain tokens.
 By default, this will be \code{NULL} until configured by the user via
 \code{\link[=sm_auth_configure]{sm_auth_configure()}}.
