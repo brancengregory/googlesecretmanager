@@ -70,7 +70,7 @@ sm_secret_create("stripe-api-key")
 sm_secret_version_add("stripe-api-key", "sk_live_...")
 
 # Retrieve in your application
-api_key <- sm_secret_version_get("stripe-api-key")
+api_key <- sm_secret_version_access("stripe-api-key")
 ```
 
 ### 2. Configuration Management
@@ -85,7 +85,7 @@ sm_secret_create("db-config")
 sm_secret_version_add("db-config", jsonlite::toJSON(db_config))
 
 # Use in your application
-config <- jsonlite::fromJSON(sm_secret_version_get("db-config"))
+config <- jsonlite::fromJSON(sm_secret_version_access("db-config"))
 ```
 
 ### 3. Rotating Secrets

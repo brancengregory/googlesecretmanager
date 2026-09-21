@@ -198,6 +198,85 @@ sm_secret_version_get.sm_secret <- function(secret, version_id, project_id = sm_
   new_sm_secret_version(resp)
 }
 
+# Internal helper: calls AccessSecretVersion and decodes the returned payload.
+sm_secret_version_access_value <- function(resource_name) {
+  req <- gargle::request_build(
+    method = "GET",
+    path = paste0("/v1/", resource_name, ":access"),
+    token = sm_token(),
+    base_url = "https://secretmanager.googleapis.com"
+  )
+
+  resp <- gargle::request_make(req) |>
+    gargle::response_process()
+
+  if (!is.list(resp) || is.null(resp$payload$data)) {
+    cli::cli_abort("API response for AccessSecretVersion did not contain secret payload data.")
+  }
+
+  value <- rawToChar(jsonlite::base64_dec(resp$payload$data))
+  attr(value, "data_crc32c") <- resp$payload$dataCrc32c
+  value
+}
+
+#' Access a Secret Version's Value
+#'
+#' Accesses and decrypts the secret data stored in a specific Secret Version.
+#' Unlike [sm_secret_version_get()], which returns version metadata, this
+#' function returns the actual secret value.
+#'
+#' @param secret The secret containing the version. Can be a secret ID (character string)
+#'   or an existing `sm_secret` object.
+#' @param version_id The version ID to access. Can be "latest" to access the latest version.
+#' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
+#' @param ... Additional arguments for methods.
+#'
+#' @return A length-one character vector containing the decoded secret value.
+#'   The `data_crc32c` checksum returned by the API is attached as an attribute.
+#' @export
+sm_secret_version_access <- function(secret, version_id = "latest", project_id = sm_project_get(), ...) {
+  UseMethod("sm_secret_version_access")
+}
+
+#' @rdname sm_secret_version_access
+#' @export
+sm_secret_version_access.character <- function(secret, version_id = "latest", project_id = sm_project_get(), ...) {
+  secret_id <- secret
+
+  if (is.null(project_id)) {
+    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+  }
+
+  # Construct the resource name
+  resource_name <- paste0("projects/", project_id, "/secrets/", secret_id, "/versions/", version_id)
+
+  cli::cli_alert_info("Accessing version {.val {version_id}} of secret {.val {secret_id}}...")
+
+  sm_secret_version_access_value(resource_name)
+}
+
+#' @rdname sm_secret_version_access
+#' @export
+sm_secret_version_access.sm_secret <- function(secret, version_id = "latest", project_id = sm_project_get(), ...) {
+  if (is.null(secret$name)) {
+    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to access version.")
+  }
+
+  # Use the secret's own project_id for consistency
+  if (!is.null(project_id) && project_id != secret$project_id) {
+    cli::cli_alert_warning(
+      "Provided {.arg project_id} ({.val {project_id}}) differs from object's project ({.val {secret$project_id}}). Using object's project to access version."
+    )
+  }
+
+  # Construct the resource name using the secret's name
+  resource_name <- paste0(secret$name, "/versions/", version_id)
+
+  cli::cli_alert_info("Accessing version {.val {version_id}} of secret {.val {secret$secret_id}}...")
+
+  sm_secret_version_access_value(resource_name)
+}
+
 #' Add a Secret Version
 #'
 #' Adds a new version to an existing Secret.
