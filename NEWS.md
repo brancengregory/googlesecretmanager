@@ -1,3 +1,8 @@
+# googlesecretmanager 0.2.0
+
+* Added `sm_secret_version_access()` to retrieve the decoded value of a secret version, distinct from `sm_secret_version_get()` which returns version metadata
+* Updated README examples to use `sm_secret_version_access()` for retrieving secret values
+
 # googlesecretmanager 0.1.0
 
 * Breaking change: Renamed all functions to use `sm_` prefix for consistency

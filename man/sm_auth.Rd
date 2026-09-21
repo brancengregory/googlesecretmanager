@@ -18,7 +18,7 @@ sm_auth(
 authenticate with. Useful for selecting a specific account if you have
 multiple, or for non-interactive authentication. If \code{NULL}, gargle will
 try to obtain it from the \code{"gargle_oauth_email"} option or allow you to
-choose from a list in interactive sessions. See \code{\link[gargle:gargle_options]{gargle::gargle_oauth_email()}}
+choose from a list in interactive sessions. See \code{\link[gargle:gargle_oauth_email]{gargle::gargle_oauth_email()}}
 for more details.}
 
 \item{path}{Optional. Path to a service account token (JSON file) or a
@@ -32,10 +32,10 @@ accepted formats.}
 \code{"https://www.googleapis.com/auth/secretmanager"}.}
 
 \item{cache}{The location of the OAuth token cache. Defaults to
-\code{\link[gargle:gargle_options]{gargle::gargle_oauth_cache()}}.}
+\code{\link[gargle:gargle_oauth_cache]{gargle::gargle_oauth_cache()}}.}
 
 \item{use_oob}{Whether to prefer "out-of-band" (OOB) authentication. Defaults to
-\code{\link[gargle:gargle_options]{gargle::gargle_oob_default()}}. Useful for non-interactive sessions where
+\code{\link[gargle:gargle_oob_default]{gargle::gargle_oob_default()}}. Useful for non-interactive sessions where
 a browser cannot be easily launched.}
 
 \item{token}{A pre-existing token object (e.g., from \code{httr::Token2.0} or

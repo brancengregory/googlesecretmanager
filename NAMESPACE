@@ -10,6 +10,8 @@ S3method(sm_secret_get,sm_secret)
 S3method(sm_secret_ls,character)
 S3method(sm_secret_update,character)
 S3method(sm_secret_update,sm_secret)
+S3method(sm_secret_version_access,character)
+S3method(sm_secret_version_access,sm_secret)
 S3method(sm_secret_version_add,character)
 S3method(sm_secret_version_add,sm_secret)
 S3method(sm_secret_version_delete,character)
@@ -36,6 +38,7 @@ export(sm_secret_delete)
 export(sm_secret_get)
 export(sm_secret_ls)
 export(sm_secret_update)
+export(sm_secret_version_access)
 export(sm_secret_version_add)
 export(sm_secret_version_delete)
 export(sm_secret_version_disable)
@@ -44,23 +47,29 @@ export(sm_secret_version_get)
 export(sm_secret_version_ls)
 export(sm_token)
 export(sm_user)
-importFrom(gargle,check_is_service_account)
-importFrom(gargle,gargle_oauth_cache)
-importFrom(gargle,gargle_oauth_client_from_json)
-importFrom(gargle,gargle_oauth_email)
-importFrom(gargle,gargle_oob_default)
-importFrom(gargle,request_build)
-importFrom(gargle,request_make)
-importFrom(gargle,response_process)
-importFrom(gargle,token_email)
-importFrom(gargle,token_fetch)
-importFrom(httr,Token2.0)
-importFrom(httr,config)
-importFrom(httr,content)
-importFrom(httr,http_type)
-importFrom(httr,stop_for_status)
+importFrom(gargle,
+  check_is_service_account,
+  gargle_oauth_cache,
+  gargle_oauth_client_from_json,
+  gargle_oauth_email,
+  gargle_oob_default,
+  request_build,
+  request_make,
+  response_process,
+  token_email,
+  token_fetch
+)
+importFrom(httr,
+  Token2.0,
+  config,
+  content,
+  http_type,
+  stop_for_status
+)
 importFrom(jsonlite,fromJSON)
 importFrom(lifecycle,deprecate_warn)
 importFrom(rlang,"%||%")
-importFrom(utils,assignInMyNamespace)
-importFrom(utils,globalVariables)
+importFrom(utils,
+  assignInMyNamespace,
+  globalVariables
+)
