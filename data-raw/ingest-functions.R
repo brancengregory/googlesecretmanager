@@ -26,7 +26,7 @@ get_discovery_ids <- function() {
 #' @examples
 #' make_discovery_url("sheets:v4")
 make_discovery_url <- function(id) {
-  av <- set_names(as.list(strsplit(id, split =":")[[1]]), c("api", "version"))
+  av <- set_names(as.list(strsplit(id, split = ":")[[1]]), c("api", "version"))
   ## https://developers.google.com/discovery/v1/reference/apis/getRest
   getRest_url <-
     "https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest"
@@ -176,11 +176,21 @@ groom_properties <- function(method, dd) {
 
   # all of the properties in the RestMethod schema, in order of usefulness
   property_names <- c(
-    "id", "httpMethod", "path", "parameters", "scopes", "description",
-    "request", "response",
-    "mediaUpload", "supportsMediaDownload", "supportsMediaUpload",
+    "id",
+    "httpMethod",
+    "path",
+    "parameters",
+    "scopes",
+    "description",
+    "request",
+    "response",
+    "mediaUpload",
+    "supportsMediaDownload",
+    "supportsMediaUpload",
     "useMediaDownloadService",
-    "etagRequired", "parameterOrder", "supportsSubscription"
+    "etagRequired",
+    "parameterOrder",
+    "supportsSubscription"
   )
 
   method[intersect(property_names, names(method))]
@@ -249,22 +259,34 @@ add_global_params <- function(method, dd) {
 }
 
 
-test_request_build <- function (method = "GET", path = "", params = list(), body = list(),
-          token = NULL, key = NULL, base_url = "https://www.googleapis.com")
-{
+test_request_build <- function(
+  method = "GET",
+  path = "",
+  params = list(),
+  body = list(),
+  token = NULL,
+  key = NULL,
+  base_url = "https://www.googleapis.com"
+) {
   path_param_names <- extract_path_names(path)
   path_params <- params[path_param_names]
   query_param_names <- setdiff(names(params), path_param_names)
   query_params <- params[query_param_names]
   query_params$key <- if (is.null(token)) {
     key %||% query_params$key
-  }
-  else {
+  } else {
     NULL
   }
-  out <- list(method = method, url = httr::modify_url(url = base_url,
-                                                      path = glue::glue_data(path_params, path), query = query_params),
-              body = body, token = token)
+  out <- list(
+    method = method,
+    url = httr::modify_url(
+      url = base_url,
+      path = glue::glue_data(path_params, path),
+      query = query_params
+    ),
+    body = body,
+    token = token
+  )
   out
 }
 

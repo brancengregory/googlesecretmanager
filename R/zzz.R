@@ -22,6 +22,9 @@ utils::globalVariables(c(".sm_auth", ".sm_endpoints", ".sm_pkg_env"))
   )
 
   if (file.exists(system.file("R/sysdata.rda", package = pkgname))) {
-    load(system.file("R/sysdata.rda", package = pkgname), envir = as.environment(topenv()))
+    load(
+      system.file("R/sysdata.rda", package = pkgname),
+      envir = as.environment(topenv())
+    )
   }
 }

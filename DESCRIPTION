@@ -20,6 +20,6 @@ Imports:
     rlang,
     utils
 Depends: 
-    R (>= 4.0)
+    R (>= 4.1)
 URL: https://brancengregory.github.io/googlesecretmanager/
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.0.0

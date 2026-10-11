@@ -10,7 +10,7 @@
 \item{project_id}{The Google Cloud Project ID. Defaults to \code{sm_project_get()}.}
 
 \item{filter}{Optional. A filter string, adhering to Secret Manager's
-\href{https://cloud.google.com/secret-manager/docs/filtering}{List-operation filtering rules}.}
+\href{https://docs.cloud.google.com/secret-manager/docs/filtering}{List-operation filtering rules}.}
 
 \item{...}{Additional arguments for methods.}
 }

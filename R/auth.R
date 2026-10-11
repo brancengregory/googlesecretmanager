@@ -70,17 +70,21 @@ NULL
 #' )
 #' sm_auth(token = token)
 #' }
-sm_auth <- function(email = gargle::gargle_oauth_email(),
-                               path = NULL,
-                               scopes = "https://www.googleapis.com/auth/secretmanager", # Adjust if needed
-                               cache = gargle::gargle_oauth_cache(),
-                               use_oob = gargle::gargle_oob_default(),
-                               token = NULL) {
-
+sm_auth <- function(
+  email = gargle::gargle_oauth_email(),
+  path = NULL,
+  scopes = "https://www.googleapis.com/auth/secretmanager", # Adjust if needed
+  cache = gargle::gargle_oauth_cache(),
+  use_oob = gargle::gargle_oob_default(),
+  token = NULL
+) {
   # If a token is explicitly passed, use it directly
   if (!is.null(token)) {
     if (!inherits(token, "Token2.0")) {
-      stop("The 'token' argument must be an object of class 'httr::Token2.0'.", call. = FALSE)
+      stop(
+        "The 'token' argument must be an object of class 'httr::Token2.0'.",
+        call. = FALSE
+      )
     }
     .sm_auth$set_cred(token)
     .sm_auth$set_auth_active(TRUE)
@@ -246,9 +250,18 @@ sm_deauth <- function() {
 #' # Check configured client:
 #' sm_oauth_client()
 #' }
-sm_auth_configure <- function(path = NULL, client = NULL, api_key = NULL, app = NULL) {
+sm_auth_configure <- function(
+  path = NULL,
+  client = NULL,
+  api_key = NULL,
+  app = NULL
+) {
   if (!is.null(app)) {
-    lifecycle::deprecate_warn("1.0.0", "sm_auth_configure(app = )", "sm_auth_configure(client = )")
+    lifecycle::deprecate_warn(
+      "1.0.0",
+      "sm_auth_configure(app = )",
+      "sm_auth_configure(client = )"
+    )
     client <- app
   }
 

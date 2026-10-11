@@ -19,12 +19,23 @@ new_sm_secret <- function(x) {
   parts <- strsplit(resource_name, "/")[[1]]
 
   # Extract project_id and secret_id based on common patterns
-  project_id <- if (length(parts) >= 2 && parts[1] == "projects") parts[2] else NA_character_
-  secret_id <- if (length(parts) >= 4 && parts[3] == "secrets") parts[4] else NA_character_
+  project_id <- if (length(parts) >= 2 && parts[1] == "projects") {
+    parts[2]
+  } else {
+    NA_character_
+  }
+  secret_id <- if (length(parts) >= 4 && parts[3] == "secrets") {
+    parts[4]
+  } else {
+    NA_character_
+  }
 
   # For regional secrets, also extract location_id
-  location_id <- if (length(parts) >= 4 && parts[3] == "locations") parts[4] else NA_character_
-
+  location_id <- if (length(parts) >= 4 && parts[3] == "locations") {
+    parts[4]
+  } else {
+    NA_character_
+  }
 
   obj_data <- list(
     # Core identifying information
@@ -72,7 +83,9 @@ print.sm_secret <- function(x, ...) {
   cli::cli_li("Name: {.val {x$name}}")
   cli::cli_li("Created: {.val {x$createTime}}")
   if (!is.null(x$labels) && length(x$labels) > 0) {
-    cli::cli_li("Labels: {.val {paste(names(x$labels), x$labels, sep = '=', collapse = '; ')}}")
+    cli::cli_li(
+      "Labels: {.val {paste(names(x$labels), x$labels, sep = '=', collapse = '; ')}}"
+    )
   } else {
     cli::cli_li("Labels: {.emph None}")
   }
@@ -130,20 +143,24 @@ sm_secret_get.character <- function(x, project_id = sm_project_get(), ...) {
   secret_id <- x # 'x' is the secret ID string
 
   if (is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+    cli::cli_abort(
+      "{.arg project_id} must be specified or set via {.fn sm_project_set}."
+    )
   }
 
   # --- Inline API Call Logic ---
   # Construct the full resource name for the GET API call path
   resource_path <- paste0("projects/", project_id, "/secrets/", secret_id)
 
-  cli::cli_alert_info("Retrieving secret {.val {secret_id}} from project {.val {project_id}}...")
+  cli::cli_alert_info(
+    "Retrieving secret {.val {secret_id}} from project {.val {project_id}}..."
+  )
 
   # Build the gargle request
   req <- gargle::request_build(
     method = "GET",
     path = paste0("/v1/", resource_path), # API path format: /v1/projects/.../secrets/...
-    token = sm_token(),        # Get the gargle token
+    token = sm_token(), # Get the gargle token
     base_url = "https://secretmanager.googleapis.com"
   )
 
@@ -153,7 +170,9 @@ sm_secret_get.character <- function(x, project_id = sm_project_get(), ...) {
 
   # Error handling: Ensure the response is a list (expected for JSON)
   if (!is.list(resp)) {
-    cli::cli_abort("API response for GetSecret was not a list. Received: {.val {typeof(resp)}}")
+    cli::cli_abort(
+      "API response for GetSecret was not a list. Received: {.val {typeof(resp)}}"
+    )
   }
   # --- End Inline API Call Logic ---
 
@@ -168,7 +187,9 @@ sm_secret_get.sm_secret <- function(x, project_id = sm_project_get(), ...) {
   resource_name <- x$name
 
   if (is.null(resource_name)) {
-    cli::cli_abort("Cannot refresh secret metadata: {.arg secret} object is missing {.field name}.")
+    cli::cli_abort(
+      "Cannot refresh secret metadata: {.arg secret} object is missing {.field name}."
+    )
   }
 
   # Warn if a different project_id was passed, as we'll use the object's own project_id for consistency
@@ -181,7 +202,9 @@ sm_secret_get.sm_secret <- function(x, project_id = sm_project_get(), ...) {
   project_id_from_object <- x$project_id
 
   # --- Inline API Call Logic ---
-  cli::cli_alert_info("Refreshing secret {.val {x$secret_id}} in project {.val {project_id_from_object}}...")
+  cli::cli_alert_info(
+    "Refreshing secret {.val {x$secret_id}} in project {.val {project_id_from_object}}..."
+  )
 
   # Build the gargle request
   req <- gargle::request_build(
@@ -197,7 +220,9 @@ sm_secret_get.sm_secret <- function(x, project_id = sm_project_get(), ...) {
 
   # Error handling
   if (!is.list(resp)) {
-    cli::cli_abort("API response for GetSecret refresh was not a list. Received: {.val {typeof(resp)}}")
+    cli::cli_abort(
+      "API response for GetSecret refresh was not a list. Received: {.val {typeof(resp)}}"
+    )
   }
   # --- End Inline API Call Logic ---
 
@@ -211,7 +236,7 @@ sm_secret_get.sm_secret <- function(x, project_id = sm_project_get(), ...) {
 #'
 #' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
 #' @param filter Optional. A filter string, adhering to Secret Manager's
-#'   [List-operation filtering rules](https://cloud.google.com/secret-manager/docs/filtering).
+#'   [List-operation filtering rules](https://docs.cloud.google.com/secret-manager/docs/filtering).
 #' @param ... Additional arguments for methods.
 #'
 #' @export
@@ -225,13 +250,19 @@ sm_secret_ls <- function(project_id = sm_project_get(), filter = NULL, ...) {
 #'
 #' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
 #' @param filter Optional. A filter string, adhering to Secret Manager's
-#'   [List-operation filtering rules](https://cloud.google.com/secret-manager/docs/filtering).
+#'   [List-operation filtering rules](https://docs.cloud.google.com/secret-manager/docs/filtering).
 #' @param ... Additional arguments for methods.
 #'
 #' @export
-sm_secret_ls.character <- function(project_id = sm_project_get(), filter = NULL, ...) {
+sm_secret_ls.character <- function(
+  project_id = sm_project_get(),
+  filter = NULL,
+  ...
+) {
   if (is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set} to list secrets.")
+    cli::cli_abort(
+      "{.arg project_id} must be specified or set via {.fn sm_project_set} to list secrets."
+    )
   }
 
   # Construct the parent resource name. This will be the value for the '{+parent}' part.
@@ -247,13 +278,15 @@ sm_secret_ls.character <- function(project_id = sm_project_get(), filter = NULL,
   # 2. Build query parameters, ensuring NULLs are removed.
   #    These will now be the *only* parameters passed to the 'params' argument of request_build.
   query_params <- list(filter = filter)
-  query_params <- query_params[!vapply(query_params, is.null, FUN.VALUE = logical(1))]
+  query_params <- query_params[
+    !vapply(query_params, is.null, FUN.VALUE = logical(1))
+  ]
 
   # Build the gargle request
   req <- gargle::request_build(
     method = "GET",
     path = api_path_full, # Pass the fully constructed path
-    params = query_params,  # Only query parameters go here
+    params = query_params, # Only query parameters go here
     token = sm_token(),
     base_url = "https://secretmanager.googleapis.com"
   )
@@ -264,7 +297,9 @@ sm_secret_ls.character <- function(project_id = sm_project_get(), filter = NULL,
 
   # Check if 'secrets' field exists and is a list/data.frame as per ListSecretsResponse
   if (is.null(resp$secrets) || !is.list(resp$secrets)) {
-    cli::cli_alert_warning("No secrets found or unexpected API response structure. Returning an empty {.cls sm_tbl}.")
+    cli::cli_alert_warning(
+      "No secrets found or unexpected API response structure. Returning an empty {.cls sm_tbl}."
+    )
     return(new_sm_tbl(dplyr::tibble())) # Return empty sm_tbl
   }
   # --- End Corrected API Call Logic ---
@@ -306,17 +341,31 @@ sm_secret_ls.character <- function(project_id = sm_project_get(), filter = NULL,
 #'
 #' @return An `sm_secret` object representing the created secret.
 #' @export
-sm_secret_create <- function(secret_id, project_id = sm_project_get(), replication = list(automatic = list()), labels = NULL, ...) {
+sm_secret_create <- function(
+  secret_id,
+  project_id = sm_project_get(),
+  replication = list(automatic = list()),
+  labels = NULL,
+  ...
+) {
   if (is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+    cli::cli_abort(
+      "{.arg project_id} must be specified or set via {.fn sm_project_set}."
+    )
   }
 
   # Construct the parent resource name
   parent_resource_name <- paste0("projects/", project_id)
 
   # Validate replication configuration
-  if (!is.list(replication) || (!"automatic" %in% names(replication) && !"user_managed" %in% names(replication))) {
-    cli::cli_abort("Replication must be a list with either 'automatic' or 'user_managed' configuration.")
+  if (
+    !is.list(replication) ||
+      (!"automatic" %in% names(replication) &&
+        !"user_managed" %in% names(replication))
+  ) {
+    cli::cli_abort(
+      "Replication must be a list with either 'automatic' or 'user_managed' configuration."
+    )
   }
 
   # Construct the request body
@@ -325,7 +374,9 @@ sm_secret_create <- function(secret_id, project_id = sm_project_get(), replicati
     labels = labels
   )
 
-  cli::cli_alert_info("Creating secret {.val {secret_id}} in project {.val {project_id}}...")
+  cli::cli_alert_info(
+    "Creating secret {.val {secret_id}} in project {.val {project_id}}..."
+  )
 
   # Build the request
   req <- gargle::request_build(
@@ -342,7 +393,9 @@ sm_secret_create <- function(secret_id, project_id = sm_project_get(), replicati
     gargle::response_process()
 
   if (!is.list(resp)) {
-    cli::cli_abort("API response for CreateSecret was not a list. Received: {.val {typeof(resp)}}")
+    cli::cli_abort(
+      "API response for CreateSecret was not a list. Received: {.val {typeof(resp)}}"
+    )
   }
 
   new_sm_secret(resp)
@@ -365,17 +418,25 @@ sm_secret_delete <- function(secret, project_id = sm_project_get(), ...) {
 
 #' @rdname sm_secret_delete
 #' @export
-sm_secret_delete.character <- function(secret, project_id = sm_project_get(), ...) {
+sm_secret_delete.character <- function(
+  secret,
+  project_id = sm_project_get(),
+  ...
+) {
   secret_id <- secret
 
   if (is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+    cli::cli_abort(
+      "{.arg project_id} must be specified or set via {.fn sm_project_set}."
+    )
   }
 
   # Construct the resource name
   resource_name <- paste0("projects/", project_id, "/secrets/", secret_id)
 
-  cli::cli_alert_info("Deleting secret {.val {secret_id}} from project {.val {project_id}}...")
+  cli::cli_alert_info(
+    "Deleting secret {.val {secret_id}} from project {.val {project_id}}..."
+  )
 
   # Build the request
   req <- gargle::request_build(
@@ -395,9 +456,15 @@ sm_secret_delete.character <- function(secret, project_id = sm_project_get(), ..
 
 #' @rdname sm_secret_delete
 #' @export
-sm_secret_delete.sm_secret <- function(secret, project_id = sm_project_get(), ...) {
+sm_secret_delete.sm_secret <- function(
+  secret,
+  project_id = sm_project_get(),
+  ...
+) {
   if (is.null(secret$name)) {
-    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to delete.")
+    cli::cli_abort(
+      "Invalid {.cls sm_secret} object. Missing {.field name} to delete."
+    )
   }
 
   # Use the secret's own project_id for consistency
@@ -407,7 +474,9 @@ sm_secret_delete.sm_secret <- function(secret, project_id = sm_project_get(), ..
     )
   }
 
-  cli::cli_alert_info("Deleting secret {.val {secret$secret_id}} from project {.val {secret$project_id}}...")
+  cli::cli_alert_info(
+    "Deleting secret {.val {secret$secret_id}} from project {.val {secret$project_id}}..."
+  )
 
   # Build the request using the secret's resource name
   req <- gargle::request_build(
@@ -421,7 +490,9 @@ sm_secret_delete.sm_secret <- function(secret, project_id = sm_project_get(), ..
   gargle::request_make(req) |>
     gargle::response_process()
 
-  cli::cli_alert_success("Secret {.val {secret$secret_id}} deleted successfully.")
+  cli::cli_alert_success(
+    "Secret {.val {secret$secret_id}} deleted successfully."
+  )
   invisible(NULL)
 }
 
@@ -441,17 +512,33 @@ sm_secret_delete.sm_secret <- function(secret, project_id = sm_project_get(), ..
 #'
 #' @return An `sm_secret` object representing the updated secret.
 #' @export
-sm_secret_update <- function(secret, project_id = sm_project_get(), replication = NULL, labels = NULL, etag = NULL, ...) {
+sm_secret_update <- function(
+  secret,
+  project_id = sm_project_get(),
+  replication = NULL,
+  labels = NULL,
+  etag = NULL,
+  ...
+) {
   UseMethod("sm_secret_update")
 }
 
 #' @rdname sm_secret_update
 #' @export
-sm_secret_update.character <- function(secret, project_id = sm_project_get(), replication = NULL, labels = NULL, etag = NULL, ...) {
+sm_secret_update.character <- function(
+  secret,
+  project_id = sm_project_get(),
+  replication = NULL,
+  labels = NULL,
+  etag = NULL,
+  ...
+) {
   secret_id <- secret
 
   if (is.null(project_id)) {
-    cli::cli_abort("{.arg project_id} must be specified or set via {.fn sm_project_set}.")
+    cli::cli_abort(
+      "{.arg project_id} must be specified or set via {.fn sm_project_set}."
+    )
   }
 
   # First get the current secret to ensure it exists and get its etag
@@ -467,11 +554,17 @@ sm_secret_update.character <- function(secret, project_id = sm_project_get(), re
 
   # Build the update mask
   update_mask <- character()
-  if (!is.null(replication)) update_mask <- c(update_mask, "replication")
-  if (!is.null(labels)) update_mask <- c(update_mask, "labels")
+  if (!is.null(replication)) {
+    update_mask <- c(update_mask, "replication")
+  }
+  if (!is.null(labels)) {
+    update_mask <- c(update_mask, "labels")
+  }
 
   if (length(update_mask) == 0) {
-    cli::cli_abort("No fields to update. Provide at least one of: replication, labels")
+    cli::cli_abort(
+      "No fields to update. Provide at least one of: replication, labels"
+    )
   }
 
   # Construct the request body
@@ -483,7 +576,9 @@ sm_secret_update.character <- function(secret, project_id = sm_project_get(), re
   # Remove NULL values
   body <- body[!vapply(body, is.null, FUN.VALUE = logical(1))]
 
-  cli::cli_alert_info("Updating secret {.val {secret_id}} in project {.val {project_id}}...")
+  cli::cli_alert_info(
+    "Updating secret {.val {secret_id}} in project {.val {project_id}}..."
+  )
 
   # Build the request
   req <- gargle::request_build(
@@ -500,7 +595,9 @@ sm_secret_update.character <- function(secret, project_id = sm_project_get(), re
     gargle::response_process()
 
   if (!is.list(resp)) {
-    cli::cli_abort("API response for UpdateSecret was not a list. Received: {.val {typeof(resp)}}")
+    cli::cli_abort(
+      "API response for UpdateSecret was not a list. Received: {.val {typeof(resp)}}"
+    )
   }
 
   new_sm_secret(resp)
@@ -508,9 +605,18 @@ sm_secret_update.character <- function(secret, project_id = sm_project_get(), re
 
 #' @rdname sm_secret_update
 #' @export
-sm_secret_update.sm_secret <- function(secret, project_id = sm_project_get(), replication = NULL, labels = NULL, etag = NULL, ...) {
+sm_secret_update.sm_secret <- function(
+  secret,
+  project_id = sm_project_get(),
+  replication = NULL,
+  labels = NULL,
+  etag = NULL,
+  ...
+) {
   if (is.null(secret$name)) {
-    cli::cli_abort("Invalid {.cls sm_secret} object. Missing {.field name} to update.")
+    cli::cli_abort(
+      "Invalid {.cls sm_secret} object. Missing {.field name} to update."
+    )
   }
 
   # Use the secret's own project_id for consistency
@@ -527,11 +633,17 @@ sm_secret_update.sm_secret <- function(secret, project_id = sm_project_get(), re
 
   # Build the update mask
   update_mask <- character()
-  if (!is.null(replication)) update_mask <- c(update_mask, "replication")
-  if (!is.null(labels)) update_mask <- c(update_mask, "labels")
+  if (!is.null(replication)) {
+    update_mask <- c(update_mask, "replication")
+  }
+  if (!is.null(labels)) {
+    update_mask <- c(update_mask, "labels")
+  }
 
   if (length(update_mask) == 0) {
-    cli::cli_abort("No fields to update. Provide at least one of: replication, labels")
+    cli::cli_abort(
+      "No fields to update. Provide at least one of: replication, labels"
+    )
   }
 
   # Construct the request body
@@ -543,7 +655,9 @@ sm_secret_update.sm_secret <- function(secret, project_id = sm_project_get(), re
   # Remove NULL values
   body <- body[!vapply(body, is.null, FUN.VALUE = logical(1))]
 
-  cli::cli_alert_info("Updating secret {.val {secret$secret_id}} in project {.val {secret$project_id}}...")
+  cli::cli_alert_info(
+    "Updating secret {.val {secret$secret_id}} in project {.val {secret$project_id}}..."
+  )
 
   # Build the request
   req <- gargle::request_build(
@@ -560,7 +674,9 @@ sm_secret_update.sm_secret <- function(secret, project_id = sm_project_get(), re
     gargle::response_process()
 
   if (!is.list(resp)) {
-    cli::cli_abort("API response for UpdateSecret was not a list. Received: {.val {typeof(resp)}}")
+    cli::cli_abort(
+      "API response for UpdateSecret was not a list. Received: {.val {typeof(resp)}}"
+    )
   }
 
   new_sm_secret(resp)

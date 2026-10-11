@@ -15,10 +15,12 @@ if (length(existing) < 1) {
   rlang::inform("Downloading Discovery Document")
   discovery_doc_path <- download_discovery_document("secretmanager:v1")
 } else {
-  msg <- glue::glue("
+  msg <- glue::glue(
+    "
     Using existing Discovery Document:
       * {existing}
-    ")
+    "
+  )
   rlang::inform(msg)
   discovery_doc_path <- here::here("data-raw", existing)
 }
@@ -56,9 +58,14 @@ find_all_named_elements <- function(dd, element_name) {
 
 methods <- find_all_named_elements(discovery_doc, "methods") |>
   (\(x) {
-    purrr::set_names(x, purrr::map_chr(x, \(x) { x$id }))
+    purrr::set_names(
+      x,
+      purrr::map_chr(x, \(x) {
+        x$id
+      })
+    )
   })() |>
-  map(groom_properties,  discovery_doc) |>
+  map(groom_properties, discovery_doc) |>
   map(add_schema_params, discovery_doc) |>
   map(add_global_params, discovery_doc) |>
   map(\(method) {

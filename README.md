@@ -160,7 +160,7 @@ Contributions are welcome! Please:
 ## Getting Help 💬
 
 - 📚 [Package Documentation](https://brancengregory.github.io/googlesecretmanager/)
-- 🔍 [Google Cloud Secret Manager Docs](https://cloud.google.com/secret-manager)
+- 🔍 [Google Cloud Secret Manager Docs](https://cloud.google.com/security/products/secret-manager)
 - 🐛 [Report Issues](https://github.com/brancengregory/googlesecretmanager/issues)
 
 ## License 📄

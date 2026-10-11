@@ -8,3 +8,9 @@
 ^pkgdown$
 ^\.github$
 ^LICENSE\.md$
+^flake.nix$
+^flake.lock$
+^.direnv$
+^.envrc$
+^CRAN-SUBMISSION$
+^cran-comments\.md$

@@ -1,7 +1,3 @@
-empty_object <- function() {
-  stats::setNames(list(), character(0))
-}
-
 #' Set Default Google Cloud Project ID
 #'
 #' Sets the default Google Cloud Project ID for subsequent Secret Manager
@@ -47,8 +43,11 @@ sm_project_set <- function(project_id) {
     )
   } else if (is.null(old_project)) {
     cli::cli_alert_success("Default GCP project set to {.val {project_id}}.")
-  } else { # old_project == project_id
-    cli::cli_alert_info("Default GCP project is already {.val {project_id}}. No change needed.")
+  } else {
+    # old_project == project_id
+    cli::cli_alert_info(
+      "Default GCP project is already {.val {project_id}}. No change needed."
+    )
   }
 
   # --- Return invisibly ---
