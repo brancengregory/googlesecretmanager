@@ -19,7 +19,7 @@ sm_secret_ls(project_id = sm_project_get(), filter = NULL, ...)
 
   Optional. A filter string, adhering to Secret Manager's
   [List-operation filtering
-  rules](https://cloud.google.com/secret-manager/docs/filtering).
+  rules](https://docs.cloud.google.com/secret-manager/docs/filtering).
 
 - ...:
 
