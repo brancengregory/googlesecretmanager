@@ -18,3 +18,8 @@ as_secret(x, ...)
 - ...:
 
   Unused argument needed for method
+
+## Value
+
+An `sm_secret` object: a list with class `c("sm_secret", "list")`
+containing the parsed secret metadata.

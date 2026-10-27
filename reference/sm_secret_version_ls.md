@@ -32,3 +32,11 @@ sm_secret_version_ls(secret, project_id = sm_project_get(), filter = NULL, ...)
 - ...:
 
   Additional arguments for methods.
+
+## Value
+
+An `sm_tbl` object, a data frame with class
+`c("sm_tbl", "tbl_df", "tbl", "data.frame")` and one row per secret
+version. Columns are `secret_id`, `version_id`, `name`, `createTime`,
+`state`, and `etag`. An empty `sm_tbl` is returned when the secret has
+no versions.

@@ -1,5 +1,12 @@
 # Changelog
 
+## googlesecretmanager 0.2.1
+
+- Rewrote the `Description` field to remove the redundant “An R package”
+  opening and to describe the package’s functionality in more detail
+- Added `\value` documentation to all exported functions, describing the
+  class and structure of each return value
+
 ## googlesecretmanager 0.2.0
 
 - Added

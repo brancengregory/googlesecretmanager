@@ -18,3 +18,8 @@ print(x, ...)
 - ...:
 
   Additional arguments passed to method
+
+## Value
+
+The `sm_tbl` object `x`, invisibly. Called for its side effect of
+printing a summary of the underlying data frame.

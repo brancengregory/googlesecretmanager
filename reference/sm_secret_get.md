@@ -28,3 +28,10 @@ sm_secret_get(x, project_id = sm_project_get(), ...)
 - ...:
 
   Additional arguments for methods.
+
+## Value
+
+An `sm_secret` object: a list with class `c("sm_secret", "list")`
+containing the secret's `name`, `secret_id`, `project_id`,
+`location_id`, metadata such as `createTime`, `labels`, and `etag`, and
+the raw API response in `raw_api_response`.
