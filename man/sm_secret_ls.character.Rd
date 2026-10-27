@@ -14,6 +14,13 @@
 
 \item{...}{Additional arguments for methods.}
 }
+\value{
+An \code{sm_tbl} object, a data frame with class
+\code{c("sm_tbl", "tbl_df", "tbl", "data.frame")} and one row per secret.
+Columns are \code{secret_id}, \code{project_id}, \code{name}, \code{createTime}, \code{labels}
+(a list-column), and \code{etag}. An empty \code{sm_tbl} is returned when the
+project contains no secrets.
+}
 \description{
 Lists metadata for all Secrets in a given Google Cloud Project.
 }

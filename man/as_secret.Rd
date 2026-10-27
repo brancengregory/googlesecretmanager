@@ -11,6 +11,10 @@ as_secret(x, ...)
 
 \item{...}{Unused argument needed for method}
 }
+\value{
+An \code{sm_secret} object. The method invoked depends on the class of
+\code{x}; see \code{\link[=as_secret.character]{as_secret.character()}} for the supported input.
+}
 \description{
 As Secret
 }

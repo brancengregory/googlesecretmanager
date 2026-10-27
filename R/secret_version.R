@@ -27,6 +27,11 @@ new_sm_secret_version <- function(x) {
 #' @param filter Optional. A filter string for secret versions.
 #' @param ... Additional arguments for methods.
 #'
+#' @return An `sm_tbl` object, a data frame with class
+#'   `c("sm_tbl", "tbl_df", "tbl", "data.frame")` and one row per secret
+#'   version. Columns are `secret_id`, `version_id`, `name`, `createTime`,
+#'   `state`, and `etag`. An empty `sm_tbl` is returned when the secret has
+#'   no versions.
 #' @export
 sm_secret_version_ls <- function(
   secret,

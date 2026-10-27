@@ -75,6 +75,10 @@ new_sm_tbl <- function(x) {
 #' @title Print sm_secret
 #' @param x A sm_secret object
 #' @param ... Additional arguments passed to method
+#'
+#' @return The `sm_secret` object `x`, invisibly. Called for its side effect
+#'   of printing a summary of the secret's metadata; the secret's value is
+#'   never displayed.
 #' @export
 print.sm_secret <- function(x, ...) {
   cli::cli_h1("sm_secret Object")
@@ -95,6 +99,9 @@ print.sm_secret <- function(x, ...) {
 #' @title Print sm_tbl
 #' @param x A sm_tbl object
 #' @param ... Additional arguments passed to method
+#'
+#' @return The `sm_tbl` object `x`, invisibly. Called for its side effect of
+#'   printing a summary of the underlying data frame.
 #' @export
 print.sm_tbl <- function(x, ...) {
   cli::cli_h1("sm_tbl Object")
@@ -108,6 +115,8 @@ print.sm_tbl <- function(x, ...) {
 #' @param x A string
 #' @param ... Unused argument needed for method
 #'
+#' @return An `sm_secret` object. The method invoked depends on the class of
+#'   `x`; see [as_secret.character()] for the supported input.
 #' @export
 as_secret <- function(x, ...) {
   UseMethod("as_secret")
@@ -118,6 +127,8 @@ as_secret <- function(x, ...) {
 #' @param x A string
 #' @param ... Unused argument needed for method
 #'
+#' @return An `sm_secret` object: a list with class `c("sm_secret", "list")`
+#'   containing the parsed secret metadata.
 #' @export
 as_secret.character <- function(x, ...) {
   new_sm_secret(x)
@@ -132,6 +143,10 @@ as_secret.character <- function(x, ...) {
 #' @param project_id The Google Cloud Project ID. Defaults to `sm_project_get()`.
 #' @param ... Additional arguments for methods.
 #'
+#' @return An `sm_secret` object: a list with class `c("sm_secret", "list")`
+#'   containing the secret's `name`, `secret_id`, `project_id`,
+#'   `location_id`, metadata such as `createTime`, `labels`, and `etag`, and
+#'   the raw API response in `raw_api_response`.
 #' @export
 sm_secret_get <- function(x, project_id = sm_project_get(), ...) {
   UseMethod("sm_secret_get")
@@ -239,6 +254,11 @@ sm_secret_get.sm_secret <- function(x, project_id = sm_project_get(), ...) {
 #'   [List-operation filtering rules](https://docs.cloud.google.com/secret-manager/docs/filtering).
 #' @param ... Additional arguments for methods.
 #'
+#' @return An `sm_tbl` object, a data frame with class
+#'   `c("sm_tbl", "tbl_df", "tbl", "data.frame")` and one row per secret.
+#'   Columns are `secret_id`, `project_id`, `name`, `createTime`, `labels`
+#'   (a list-column), and `etag`. An empty `sm_tbl` is returned when the
+#'   project contains no secrets.
 #' @export
 sm_secret_ls <- function(project_id = sm_project_get(), filter = NULL, ...) {
   UseMethod("sm_secret_ls", project_id)
@@ -253,6 +273,11 @@ sm_secret_ls <- function(project_id = sm_project_get(), filter = NULL, ...) {
 #'   [List-operation filtering rules](https://docs.cloud.google.com/secret-manager/docs/filtering).
 #' @param ... Additional arguments for methods.
 #'
+#' @return An `sm_tbl` object, a data frame with class
+#'   `c("sm_tbl", "tbl_df", "tbl", "data.frame")` and one row per secret.
+#'   Columns are `secret_id`, `project_id`, `name`, `createTime`, `labels`
+#'   (a list-column), and `etag`. An empty `sm_tbl` is returned when the
+#'   project contains no secrets.
 #' @export
 sm_secret_ls.character <- function(
   project_id = sm_project_get(),

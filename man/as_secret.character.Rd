@@ -11,6 +11,10 @@
 
 \item{...}{Unused argument needed for method}
 }
+\value{
+An \code{sm_secret} object: a list with class \code{c("sm_secret", "list")}
+containing the parsed secret metadata.
+}
 \description{
 As Secret Character
 }

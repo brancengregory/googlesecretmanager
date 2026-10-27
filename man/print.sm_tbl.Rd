@@ -11,6 +11,10 @@
 
 \item{...}{Additional arguments passed to method}
 }
+\value{
+The \code{sm_tbl} object \code{x}, invisibly. Called for its side effect of
+printing a summary of the underlying data frame.
+}
 \description{
 Print sm_tbl
 }

@@ -11,6 +11,11 @@
 
 \item{...}{Additional arguments passed to method}
 }
+\value{
+The \code{sm_secret} object \code{x}, invisibly. Called for its side effect
+of printing a summary of the secret's metadata; the secret's value is
+never displayed.
+}
 \description{
 Print sm_secret
 }

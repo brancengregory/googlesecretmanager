@@ -9,6 +9,11 @@ sm_endpoint(i)
 \arguments{
 \item{i}{The index of the endpoint}
 }
+\value{
+A single Secret Manager API endpoint: a named list with elements
+such as \code{id}, \code{httpMethod}, \code{path}, \code{parameters}, \code{scopes}, and
+\code{response}.
+}
 \description{
 Secret Manager Endpoint
 }

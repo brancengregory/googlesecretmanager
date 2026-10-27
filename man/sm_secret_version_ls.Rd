@@ -22,6 +22,13 @@ object or a character string representing the secret ID.}
 
 \item{...}{Additional arguments for methods.}
 }
+\value{
+An \code{sm_tbl} object, a data frame with class
+\code{c("sm_tbl", "tbl_df", "tbl", "data.frame")} and one row per secret
+version. Columns are \code{secret_id}, \code{version_id}, \code{name}, \code{createTime},
+\code{state}, and \code{etag}. An empty \code{sm_tbl} is returned when the secret has
+no versions.
+}
 \description{
 Lists metadata for all Secret Versions associated with a given Secret.
 }

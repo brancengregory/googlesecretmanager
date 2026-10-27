@@ -20,6 +20,12 @@ or an existing \code{sm_secret} object to refresh its metadata.}
 
 \item{...}{Additional arguments for methods.}
 }
+\value{
+An \code{sm_secret} object: a list with class \code{c("sm_secret", "list")}
+containing the secret's \code{name}, \code{secret_id}, \code{project_id},
+\code{location_id}, metadata such as \code{createTime}, \code{labels}, and \code{etag}, and
+the raw API response in \code{raw_api_response}.
+}
 \description{
 Retrieves metadata for a specific Secret Manager secret.
 }

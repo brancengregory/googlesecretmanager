@@ -1,10 +1,18 @@
 Package: googlesecretmanager
 Title: Manage Google Cloud Platform Secrets with R
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person("Brancen", "Gregory", , "brancengregory@gmail.com", role = c("aut", "cre"))
 Description:
-    An R package for interacting with Google Cloud Secret Manager, providing a secure way to manage and access secrets in your R applications.
+    Create, inspect, update, and delete Google Cloud Secret Manager
+    secrets and their versions directly from R. The package wraps the
+    Secret Manager API v1 and uses 'gargle' for authentication, supporting
+    interactive OAuth, service account keys, and pre-existing tokens.
+    Secret and version metadata are returned as S3 objects with print
+    methods that avoid revealing secret values, and listing operations
+    return data frames with one row per secret or version. Default
+    project settings, labels, filters, and the full version lifecycle
+    (add, access, enable, disable, and delete) are supported.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

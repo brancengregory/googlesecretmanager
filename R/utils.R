@@ -101,6 +101,9 @@ sm_endpoints <- function(i = NULL) {
 #'
 #' @param i The index of the endpoint
 #'
+#' @return A single Secret Manager API endpoint: a named list with elements
+#'   such as `id`, `httpMethod`, `path`, `parameters`, `scopes`, and
+#'   `response`.
 #' @export
 #'
 sm_endpoint <- function(i) {
